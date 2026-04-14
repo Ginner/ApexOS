@@ -5,7 +5,6 @@
     ../../homeManagerModules
     ../../users/ginner/home.nix  # User-specific home-manager config
     inputs.nixvim.homeModules.nixvim
-    inputs.ags.homeManagerModules.default
     inputs.walker.homeManagerModules.walker
   ];
   # Enable laptop home configuration

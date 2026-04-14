@@ -1,6 +1,5 @@
 {
   imports = [
-    ./ags.nix
     ./firefox.nix
     ./hyprland.nix
     ./inkscape.nix

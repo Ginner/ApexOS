@@ -12,7 +12,6 @@ in
     # Enable laptop-specific home modules according to the table
     # Required applications
     myHomeModules.services.xdg.enable = lib.mkDefault true;
-    myHomeModules.guiPrograms.ags.enable = lib.mkDefault true;
     myHomeModules.guiPrograms.firefox.enable = lib.mkDefault true;
     myHomeModules.guiPrograms.hyprland.enable = lib.mkDefault true;
     myHomeModules.cliPrograms.kitty.enable = lib.mkDefault true;
