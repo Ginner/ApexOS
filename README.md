@@ -138,6 +138,21 @@ Theming is managed by [Stylix](https://stylix.danth.me) via the NixOS module (`s
 
 Schemes are YAML files from `pkgs.base16-schemes` (e.g. `catppuccin-frappe.yaml`, `gruvbox-dark-hard.yaml`). Browse available schemes with `ls $(nix-build '<nixpkgs>' -A base16-schemes)/share/themes/`.
 
+## XDG Desktop Portals
+
+Portals provide a D-Bus API that lets sandboxed and portal-aware applications request privileged operations without direct system access. Common uses: file chooser dialogs, screen sharing (Pipewire), screenshots, suspend inhibition, and colour scheme queries.
+
+Two backends run together — this is the standard Hyprland setup:
+
+| Backend | Package | Handles |
+|---|---|---|
+| `xdg-desktop-portal-hyprland` | `pkgs.xdg-desktop-portal-hyprland` | Screen cast, screenshot (via `hyprland-share-picker`), security context |
+| `xdg-desktop-portal-gtk` | `pkgs.xdg-desktop-portal-gtk` | File chooser, appearance (light/dark query), print, trash |
+
+The priority order is `[ "hyprland" "gtk" ]` (`common.default` in `homeManagerModules/services/xdg.nix`) — Hyprland's portal is tried first; GTK handles anything it does not implement. Both must remain active; removing the GTK portal breaks file open/save dialogs in most applications.
+
+Configuration lives entirely in `homeManagerModules/services/xdg.nix`. No host-level overrides are needed.
+
 ## Post build
 
 ### pass
