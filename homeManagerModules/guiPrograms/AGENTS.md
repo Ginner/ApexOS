@@ -12,7 +12,6 @@ GUI programs requiring a Wayland compositor. All modules here assume Hyprland as
 
 | File | Option path | Description |
 |---|---|---|
-| ags.nix | `myHomeModules.guiPrograms.ags` | Aylur's GTK Shell (widget system) — enabled by laptop bundle |
 | firefox.nix | `myHomeModules.guiPrograms.firefox` | Firefox browser |
 | hyprland.nix | `myHomeModules.guiPrograms.hyprland` | Hyprland compositor + hyprlock + hypridle |
 | inkscape.nix | `myHomeModules.guiPrograms.inkscape` | Vector graphics editor |
@@ -45,15 +44,33 @@ This is the largest and most complex HM module. It contains:
 
 There is no HM-level stylix module. `stylix.nixosModules.stylix` (in `flake.nix`) handles all theming via `stylix.homeManagerIntegration.autoImport = true` (the default), which automatically propagates the NixOS theme (scheme, fonts, cursor, image) to all HM-managed programs.
 
-Per-host wallpaper overrides and target toggles are set directly in `hosts/<HOSTNAME>/home.nix`:
+Active theme defaults (set in `nixosModules/shared/stylix.nix`):
+- Colour scheme: `google-dark` (base16)
+- Monospace font: `Hack Nerd Font Mono` (`nerd-fonts.hack`)
+- Cursor: `rose-pine-hyprcursor`
+
+Per-host wallpaper is set directly in `hosts/<HOSTNAME>/home.nix`:
 ```nix
 stylix.image = ../../assets/wall.jpeg;
-stylix.targets.waybar.enable = false;  # waybar managed manually
 ```
 
 ## waybar.nix
 
 Follows the standard `myHomeModules.guiPrograms.waybar.enable` pattern. The laptop bundle enables it with `mkDefault true`. Exposes an `output` option (default `"eDP-1"`) so hosts can override which monitor waybar is anchored to.
+
+Stylix integration is handled inside the module itself:
+- `stylix.targets.waybar.enable = true` — injects `@base00`–`@base0F` CSS colour variables
+- `stylix.targets.waybar.addCss = false` — suppresses Stylix's structural CSS overrides; layout is managed manually
+
+The bar uses three floating pills (left/center/right) with arrow-glyph edge caps (`custom/sep-*` modules) to create pointed edges. Font is `Hack Nerd Font` (already installed by `nixosModules/shared/stylix.nix`). The left pill's logo module opens a GTK power menu; its XML is written to `~/.config/waybar/power_menu.xml` via `home.file`.
+
+### Waybar module icon/glyph notes
+
+Nerd Font glyph codepoints cannot be written as Nix string escapes (`\uXXXX`) — they must be pasted as literal UTF-8 characters into the `.nix` source. This applies to `format`, `format-icons`, and any other string field that displays a glyph.
+
+The `format` fields for `custom/sep-*` and `custom/power` modules, and the workspace `format-icons`, must be edited manually in the source if glyphs need changing. Do not replace them with escape sequences.
+
+Font variant matters: `"Hack Nerd Font"` (proportional) covers the full Nerd Font glyph set. `"Hack Nerd Font Mono"` (monospace) drops many glyphs. The CSS in `waybar.nix` explicitly sets `"Hack Nerd Font"` via `window#waybar, window#waybar *` to override Stylix's prepended `*` block (which sets the Mono variant).
 
 ## MIME associations
 
