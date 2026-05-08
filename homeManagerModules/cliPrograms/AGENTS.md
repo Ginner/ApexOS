@@ -22,7 +22,7 @@ Terminal programs and tools that do not depend on a display server or compositor
 | scripts.nix | `myHomeModules.cliPrograms.scripts` | Custom shell scripts (mailias, sermail) |
 | ssh.nix | `myHomeModules.cliPrograms.ssh` | SSH client + match blocks |
 | starship.nix | `myHomeModules.cliPrograms.starship` | Starship shell prompt |
-| wayland-tools.nix | `myHomeModules.cliPrograms.wayland-tools` | Wayland utilities (wl-clipboard, grim, slurp, etc.) |
+| wayland-tools.nix | `myHomeModules.cliPrograms.wayland-tools` | Wayland utilities (wl-clipboard, grim, slurp, swaync notification daemon) |
 | zsh.nix | `myHomeModules.cliPrograms.zsh` | Zsh shell config |
 
 ## Observed patterns

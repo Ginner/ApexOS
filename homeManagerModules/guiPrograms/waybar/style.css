@@ -1,0 +1,207 @@
+/*
+ * Waybar stylesheet — based on cebem1nt/dotfiles
+ *
+ * Stylix injects @base00–@base0F CSS custom properties before this file.
+ * We map those to the semantic names used in the layout rules below so
+ * that the rest of the file needs no knowledge of base16 slot numbers.
+ */
+
+/* ── Semantic colour aliases (from Stylix base16 variables) ──────────── */
+@define-color module-bg     @base01;   /* pill/widget background        */
+@define-color tooltip-bg    @base01;   /* tooltip + menu background     */
+@define-color inactive      @base03;   /* muted / dim elements          */
+@define-color fg            @base05;   /* default foreground text       */
+@define-color workspace-fg  @base05;   /* workspace button text         */
+@define-color red           @base08;   /* critical / error              */
+@define-color yellow        @base0A;   /* warning                       */
+@define-color green         @base0B;   /* ok / power-saver              */
+@define-color blue          @base0D;   /* accent / highlight            */
+
+/* ── Reset ───────────────────────────────────────────────────────────── */
+* {
+    font-family: 'Hack Nerd Font';
+    border: none;
+    border-radius: 0;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    text-shadow: none;
+}
+
+#waybar {
+    font-weight: 700;
+    background: transparent;
+    font-size: 14px;
+    color: @fg;
+}
+
+/* ── Global module paddings ──────────────────────────────────────────── */
+#temperature,
+#bluetooth,
+#battery,
+#memory,
+#window,
+#cpu,
+#load {
+    padding: 1px 7px;
+}
+
+#network,
+#tray {
+    padding: 1px 6px;
+}
+
+#backlight,
+#pulseaudio {
+    padding: 1px 8px;
+}
+
+#pulseaudio {
+    padding-left: 4px;
+}
+
+#backlight-slider,
+#pulseaudio-slider {
+    padding: 0 7px 0 2px;
+}
+
+#workspaces,
+#bluetooth,
+#battery,
+#memory,
+#temperature,
+#cpu,
+#window,
+#load {
+    margin: 0 3px;
+}
+
+/* ── Pill containers ─────────────────────────────────────────────────── */
+#right,
+#left,
+#right-hidden-top,
+#left-hidden-top {
+    padding: 2px 10px;
+    border-radius: 15px;
+    background: @module-bg;
+}
+
+#right-hidden-top,
+#left-hidden-top {
+    padding: 0 12px;
+}
+
+#right, #left {
+    margin: 0 8px;
+}
+
+/* ── Clock ───────────────────────────────────────────────────────────── */
+#clock {
+    background: @module-bg;
+    padding: 1px 18px;
+    border-radius: 15px;
+}
+
+/* ── Accent modules ──────────────────────────────────────────────────── */
+#custom-ctlcenter {
+    margin-left: 7px;
+}
+
+#power-profiles-daemon,
+#custom-start {
+    margin-right: 7px;
+}
+
+/* ── State colours ───────────────────────────────────────────────────── */
+#cpu.critical,
+#memory.critical,
+#battery.critical,
+#network.disabled,
+#temperature.critical,
+#network.disconnected,
+#power-profiles-daemon.performance {
+    color: @red;
+}
+
+#cpu.warning,
+#memory.warning,
+#battery.warning,
+#temperature.warning {
+    color: @yellow;
+    background: unset;
+}
+
+#power-profiles-daemon.power-saver {
+    color: @green;
+}
+
+#custom-start,
+#custom-ctlcenter {
+    color: @blue;
+}
+
+/* ── Workspaces ──────────────────────────────────────────────────────── */
+#workspaces button {
+    color: @workspace-fg;
+    font-size: 14px;
+    border-radius: 100%;
+    padding: 0 2px;
+    margin: 0 3px;
+}
+
+#workspaces button:hover {
+    background: transparent;
+}
+
+/* ── Tooltips ────────────────────────────────────────────────────────── */
+tooltip {
+    border-radius: 15px;
+    background: @tooltip-bg;
+}
+
+tooltip label {
+    padding: 3px 10px;
+    color: @fg;
+    font-weight: 700;
+}
+
+/* ── Context menus ───────────────────────────────────────────────────── */
+.popup * {
+    box-shadow: none;
+    outline: none;
+}
+
+menu {
+    border-radius: 10px;
+    font-weight: 700;
+    color: @fg;
+    background: @tooltip-bg;
+}
+
+menu > * {
+    padding: 3px 0px;
+}
+
+menu > *:hover {
+    border-radius: 10px;
+    background-color: @inactive;
+}
+
+/* ── Sliders ─────────────────────────────────────────────────────────── */
+slider {
+    opacity: 0;
+    box-shadow: none;
+}
+
+trough {
+    min-width: 50px;
+    min-height: 5px;
+    border-radius: 8px;
+    background: @inactive;
+}
+
+trough highlight {
+    border-radius: 8px;
+    background-color: @fg;
+    background-image: none;
+}

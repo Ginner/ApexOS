@@ -8,7 +8,7 @@
     ./signal.nix
     ./swayimg.nix
     ./walker.nix
-    ./waybar.nix
+    ./waybar
     ./zathura.nix
   ];
 }

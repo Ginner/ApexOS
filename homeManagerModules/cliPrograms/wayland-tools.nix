@@ -28,7 +28,7 @@ in
     notifications = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Enable mako notifications";
+      description = "Enable swaync notification daemon";
     };
   };
 
@@ -38,13 +38,9 @@ in
       lib.optionals cfg.screenshot [ grim slurp swappy ] ++
       lib.optionals cfg.recording [ wf-recorder ];
 
-    # Configure mako notifications
-    services.mako = lib.mkIf cfg.notifications {
+    # Notification daemon — swaync (SwayNotificationCenter)
+    services.swaync = lib.mkIf cfg.notifications {
       enable = true;
-      settings = {
-        default-timeout = 5000;
-        ignore-timeout = true;
-      };
     };
   };
 }
