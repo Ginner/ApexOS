@@ -12,7 +12,9 @@ in
 
     startupPrograms = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "waybar" "mako" ];
+      # waybar is intentionally absent — kanshi owns its lifecycle and starts
+      # it with the correct --config for the active display profile.
+      default = [ "swaync" ];
       description = "Programs to start with Hyprland";
     };
   };

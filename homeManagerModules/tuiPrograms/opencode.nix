@@ -19,7 +19,7 @@
       tui.theme = "stylix";
       settings = {
         plugin = [
-          "@ex-machina/opencode-anthropic-auth@1.5.1"
+          "@ex-machina/opencode-anthropic-auth@1.8.0"
         ];
         permission = {
           "*" = "ask";

@@ -15,23 +15,36 @@
   # Override stylix wallpaper for BISHOP (NixOS module handles the rest via autoImport)
   stylix.image = ../../assets/wall.jpeg;
 
+  myHomeModules.guiPrograms.waybar = {
+    output       = "eDP-1";
+    # Use the stable monitor description string (not the connector name like
+    # "DP-8", which can change between boots/docking events).
+    dockedOutput = "Dell Inc. DELL U2717D T4F1X87A735S";
+  };
+
   # Host-specific display configuration
   services.kanshi.settings = [
-    { 
+    {
       profile.name = "undocked";
       profile.outputs = [
         { criteria = "eDP-1"; scale = 1.2; status = "enable"; }
       ];
-      profile.exec = "brightnessctl set 40%";
+      profile.exec = [
+        "brightnessctl set 40%"
+        "pkill -x waybar; systemd-run --user --no-block waybar --config ${config.home.homeDirectory}/.config/waybar/config-undocked.json"
+      ];
     }
-    { 
+    {
       profile.name = "office";
       profile.outputs = [
         { criteria = "eDP-1"; position = "0,0"; scale = 1.0; } # Remember, scale applies to size-coordinates
         { criteria = "Dell Inc. DELL U2717D T4F1X87A735S"; position = "1920,-240"; scale = 1.00; }
         { criteria = "Dell Inc. DELL U2417H 5K9YD734A3ES"; position = "4480,-290"; scale = 1.00; transform = "270"; }
       ];
-      profile.exec = "brightnessctl set 75%";
+      profile.exec = [
+        "brightnessctl set 75%"
+        "pkill -x waybar; systemd-run --user --no-block waybar --config ${config.home.homeDirectory}/.config/waybar/config-docked.json"
+      ];
     }
   ];
   
