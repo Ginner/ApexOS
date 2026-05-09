@@ -17,6 +17,16 @@ in
       default = [ "swaync" ];
       description = "Programs to start with Hyprland";
     };
+
+    isDesktop = lib.mkOption {
+      type        = lib.types.bool;
+      default     = false;
+      description = ''
+        When true, hypridle skips the brightness-dim listener (requires
+        brightnessctl) and the suspend listener (undesirable on a desktop).
+        Only the lock-on-idle and DPMS-off listeners remain active.
+      '';
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -190,25 +200,27 @@ in
 	before_sleep_cmd = "loginctl lock-session";
 	after_sleep_cmd = "hyprctl dispatch dpms on";
       };
-      listener = [
+      listener = lib.optionals (!cfg.isDesktop) [
         {
-	  timeout = 150;
-	  on-timeout = "brightnessctl -s set 10";
-	  on-resume = "brightnessctl -r";
-	}
-	{
-	  timeout = 300;
-	  on-timeout = "loginctl lock-session";
-	}
-	{
-	  timeout = 330;
-	  on-timeout = "hyprctl dispatch dpms off";
-	  on-resume = "hyprctl dispatch dpms on";
-	}
-	{
-	  timeout = 1800;
-	  on-timeout = "systemctl suspend";
-	}
+          timeout    = 150;
+          on-timeout = "brightnessctl -s set 10";
+          on-resume  = "brightnessctl -r";
+        }
+      ] ++ [
+        {
+          timeout    = 300;
+          on-timeout = "loginctl lock-session";
+        }
+        {
+          timeout    = 330;
+          on-timeout = "hyprctl dispatch dpms off";
+          on-resume  = "hyprctl dispatch dpms on";
+        }
+      ] ++ lib.optionals (!cfg.isDesktop) [
+        {
+          timeout    = 1800;
+          on-timeout = "systemctl suspend";
+        }
       ];
     };
   };

@@ -115,6 +115,45 @@ The host SSH key (`/etc/ssh/ssh_host_ed25519_key`) is used for NixOS-level decry
    nix-shell -p sops --run 'sops updatekeys secrets/email.yaml'
    ```
 
+### WOPR — post-first-boot sops setup
+
+WOPR's host age key does not exist until the machine boots for the first time (the host SSH
+key is auto-generated on first boot). After booting WOPR for the first time, run the following
+**on any machine that already has the `user_ginner` age key** (e.g. BISHOP):
+
+1. **Derive the WOPR age pubkey from its SSH host key:**
+   ```bash
+   # Run on WOPR itself, or via ssh:
+   nix-shell -p ssh-to-age --run 'cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age'
+   ```
+
+2. **Add the key to `.sops.yaml`** in the repo root. Insert a new anchor and add it to the
+   WOPR creation rule:
+   ```yaml
+   keys:
+     - &user_ginner  age1...   # existing
+     - &host_bishop  age1...   # existing
+     - &host_wopr    age1...   # NEW — paste pubkey from step 1 here
+
+   creation_rules:
+     - path_regex: secrets/[^/]+\.yaml$
+       key_groups:
+         - age:
+             - *user_ginner
+             - *host_bishop
+             - *host_wopr   # NEW
+   ```
+
+3. **Re-encrypt all secret files** so WOPR can decrypt them:
+   ```bash
+   nix-shell -p sops --run 'sops updatekeys secrets/email.yaml'
+   ```
+
+4. **Commit the updated `.sops.yaml` and re-encrypted `secrets/email.yaml`**, then rebuild:
+   ```bash
+   sudo nixos-rebuild switch --flake .#WOPR
+   ```
+
 ### Secret file structure (`secrets/email.yaml`)
 
 Contains 6 keys: `work-address`, `work-realname`, `work-password`, `private-address`, `private-realname`, `private-password`.

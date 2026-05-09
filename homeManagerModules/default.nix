@@ -7,6 +7,7 @@
     ./services
     ./tuiPrograms
     ./laptop.nix
+    ./desktop.nix
   ];
 
   options.myHomeModules = {
