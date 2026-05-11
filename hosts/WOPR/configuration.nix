@@ -8,6 +8,7 @@
   ];
 
   networking.hostName = "WOPR";
+  boot.kernelParams = [ "nomodeset" ];
 
   userGlobals = {
     username = "ginner";
