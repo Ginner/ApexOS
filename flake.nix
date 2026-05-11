@@ -71,7 +71,24 @@
             }
 	];
       };
-      # 
+      WOPR = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/WOPR/configuration.nix
+          sops-nix.nixosModules.sops
+          home-manager.nixosModules.default
+          stylix.nixosModules.stylix
+          {
+            home-manager.sharedModules = [ sops-nix.homeManagerModules.sops ];
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            nixpkgs.overlays = [
+              yazi.overlays.default
+            ];
+          }
+        ];
+      };
     };
   };
 }

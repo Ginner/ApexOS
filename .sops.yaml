@@ -4,6 +4,7 @@
 # Keys needed:
 #   &user_ginner  — your personal age public key (~/.config/sops/age/keys.txt)
 #   &host_bishop  — BISHOP's host age public key (derived from /etc/ssh/ssh_host_ed25519_key.pub)
+#   &host_wopr    — WOPR's host age public key (derived from /etc/ssh/ssh_host_ed25519_key.pub)
 #
 # To get the host age pubkey:
 #   nix-shell -p ssh-to-age --run 'cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age'
@@ -14,6 +15,7 @@
 keys:
   - &user_ginner  age1me5j9axv2zvdkdkpxh6psz7ux90qhzzxtxn7qvlrc4jjsnr8j9jq70ju0k
   - &host_bishop  age1vrup8k63y88y6jqas6tesqf47lyk2yfy3f6mk20lj6uxnxz0dadsdsawpg
+  - &host_wopr    age1lcseapcdg76hex2d29hj07v0574x67mzkn72fv0ufhttakvrpqesk772kk
 
 creation_rules:
   - path_regex: secrets/[^/]+\.yaml$
@@ -21,3 +23,4 @@ creation_rules:
       - age:
           - *user_ginner
           - *host_bishop
+          - *host_wopr

@@ -1,0 +1,52 @@
+{ config, pkgs, inputs, ... }:
+{
+  imports = [
+    ./hardware-configuration.nix
+    inputs.xremap-flake.nixosModules.default
+    ../../nixosModules
+    ../../users/ginner
+  ];
+
+  networking.hostName = "WOPR";
+  # boot.kernelParams = [ "nomodeset" ];
+  nixpkgs.config.allowUnfree = true;
+  userGlobals = {
+    username = "ginner";
+  };
+
+  myModules.desktop.enable = true;
+
+  # Host-level secret decryption uses the host SSH key (auto-generated on first boot)
+  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+
+  home-manager = {
+    extraSpecialArgs = { inherit inputs; username = config.userGlobals.username; };
+    users = {
+      ${config.userGlobals.username} = import ./home.nix;
+    };
+  };
+
+  myModules.shared.stylix = {
+    enable = true;
+    image  = ../../assets/wall.jpeg;
+  };
+
+  # Fix?
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.graphics.enable = true;
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = true;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
+  };
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  myModules.services.tailscale.enable = true;
+
+  environment.systemPackages = with pkgs; [ home-manager ];
+
+  nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
+
+  system.stateVersion = "25.11";
+}

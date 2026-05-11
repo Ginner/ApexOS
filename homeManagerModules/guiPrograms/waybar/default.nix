@@ -6,6 +6,7 @@ let
 
   # All module definitions and layout in one place.  barConfig is called
   # once per bar instance (undocked / docked), differing only in `output`.
+  # When noBattery is true, the battery widget and backlight group are omitted.
   barConfig = output: {
     layer    = "top";
     output   = output;
@@ -32,7 +33,9 @@ let
       };
       modules = [
         "custom/arrow-right"
+      ] ++ lib.optionals (!cfg.noBattery) [
         "battery"
+      ] ++ [
         "cpu"
         "load"
       ];
@@ -51,7 +54,9 @@ let
       modules = [
         "bluetooth"
         "group/group-volume"
+      ] ++ lib.optionals (!cfg.noBattery) [
         "group/group-backlight"
+      ] ++ [
         "network"
         "tray"
       ];
@@ -346,6 +351,16 @@ in
         appropriate config file for each profile:
           undocked: waybar --config ~/.config/waybar/config-undocked.json
           docked:   waybar --config ~/.config/waybar/config-docked.json
+      '';
+    };
+
+    noBattery = lib.mkOption {
+      type        = lib.types.bool;
+      default     = false;
+      description = ''
+        When true, remove the battery widget from the left drawer and the
+        backlight slider group from the right side.  Set this on desktop
+        hosts where neither a battery nor a backlight device is present.
       '';
     };
   };
