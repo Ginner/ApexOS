@@ -44,18 +44,18 @@
     matchBlocks = {
       "github.com" = {
         user           = "git";
-        identityFile   = "~/.ssh/id_ed25519_sk";
+        identityFile   = "~/.ssh/id_ed25519";
       };
       "forgejo" = {
         hostname       = "forgejo.ginnerskov.co";
         user           = "git";
         port           = 222;
-        identityFile   = "~/.ssh/id_ed25519_sk";
+        identityFile   = "~/.ssh/id_ed25519";
       };
       "codeberg" = {
         user           = "git";
         hostname       = "codeberg.org";
-        identityFile   = "~/.ssh/id_ed25519_sk";
+        identityFile   = "~/.ssh/id_ed25519";
       };
     };
   };
