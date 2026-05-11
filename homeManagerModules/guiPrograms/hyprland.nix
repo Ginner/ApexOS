@@ -2,8 +2,14 @@
 
 let
   cfg = config.myHomeModules.guiPrograms.hyprland;
+  effectiveStartupPrograms = lib.unique (
+    lib.optionals
+      (cfg.isDesktop && (config.myHomeModules.guiPrograms.waybar.enable or false))
+      [ "waybar" ]
+    ++ cfg.startupPrograms
+  );
   startupScript = pkgs.writeShellScriptBin "start" (
-    lib.concatMapStringsSep "\n" (p: "${p} &") cfg.startupPrograms
+    lib.concatMapStringsSep "\n" (p: "${p} &") effectiveStartupPrograms
   );
 in
 {
@@ -12,8 +18,8 @@ in
 
     startupPrograms = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      # waybar is intentionally absent — kanshi owns its lifecycle and starts
-      # it with the correct --config for the active display profile.
+      # On laptop-style hosts, waybar is intentionally absent — kanshi owns its
+      # lifecycle and starts it with the correct --config for the active profile.
       default = [ "swaync" ];
       description = "Programs to start with Hyprland";
     };
