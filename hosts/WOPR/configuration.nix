@@ -8,8 +8,8 @@
   ];
 
   networking.hostName = "WOPR";
-  boot.kernelParams = [ "nomodeset" ];
-
+  # boot.kernelParams = [ "nomodeset" ];
+  nixpkgs.config.allowUnfree = true;
   userGlobals = {
     username = "ginner";
   };
@@ -31,11 +31,22 @@
     image  = ../../assets/wall.jpeg;
   };
 
+  # Fix?
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.graphics.enable = true;
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = true;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
+  };
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   myModules.services.tailscale.enable = true;
 
   environment.systemPackages = with pkgs; [ home-manager ];
 
   nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
 
-  system.stateVersion = "25.05";
+  system.stateVersion = "25.11";
 }
