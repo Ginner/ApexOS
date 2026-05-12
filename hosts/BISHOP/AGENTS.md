@@ -63,4 +63,3 @@ The laptop bundle detects AMD CPU via `config.hardware.cpu.amd.updateMicrocode` 
 
 - If kanshi stops activating on login, check `systemdTarget = "hyprland-session.target"` in the kanshi module
 - `bolt` service manages Thunderbolt device authorisation. After connecting a new Thunderbolt device: `boltctl list` → `boltctl enroll <device-id>`
-- rbw (Bitwarden CLI) requires post-build setup: `rbw config set email <email>`

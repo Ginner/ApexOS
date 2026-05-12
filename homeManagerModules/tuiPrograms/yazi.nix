@@ -29,6 +29,9 @@ in
         };
       };
       settings = {
+        preview = {
+          wrap = "no";
+        };
         opener = {
           edit = [
             { run = ''kitty --detach nvim "$@"''; block = false; orphan = true; for = "linux"; }
