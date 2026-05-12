@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -8,8 +8,7 @@
   ];
 
   networking.hostName = "WOPR";
-  # boot.kernelParams = [ "nomodeset" ];
-  nixpkgs.config.allowUnfree = true;
+
   userGlobals = {
     username = "ginner";
   };
@@ -31,7 +30,13 @@
     image  = ../../assets/wall.jpeg;
   };
 
-  # Fix?
+  # nVidia stuff
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      # Add additional package names here
+      "nvidia-x11" # Just a name - Doesn't seem to indicate that the session must be x11...
+      "nvidia-settings"
+    ];
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware.graphics.enable = true;
   hardware.nvidia = {
@@ -41,6 +46,7 @@
     package = config.boot.kernelPackages.nvidiaPackages.latest;
   };
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
 
   myModules.services.tailscale.enable = true;
 
