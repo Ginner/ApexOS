@@ -14,6 +14,8 @@ in
       package = inputs.hyprland.packages."${pkgs.stdenv.hostPlatform.system}".hyprland;
     };
 
+    security.pam.services.hyprlock.enable = true;
+
     services.xremap.withHypr = lib.mkDefault true;
   };
 }
