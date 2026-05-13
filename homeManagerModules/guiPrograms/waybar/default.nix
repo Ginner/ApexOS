@@ -102,12 +102,12 @@ let
         "2"      = "󰋙";
         "3"      = "󰋙";
         "4"      = "󰋙";
-        "5"      = "󰲩";
-        "6"      = "󰲫";
-        "7"      = "󰲭";
-        "8"      = "󰲯";
-        "9"      = "󰲱";
-        "10"     = "󰿭";
+        "5"      = "󰋙";
+        "6"      = "󰋙";
+        "7"      = "󰋙";
+        "8"      = "󰋙";
+        "9"      = "󰋙";
+        "10"     = "󰋙";
         "active" = "󰋘";
         "default" = "";
         "empty"   = "";
@@ -200,10 +200,10 @@ let
 
     "network" = {
       interval            = 10;
-      format-disabled     = "";
-      format-disconnected = "";
-      format-wifi         = "";
-      format-ethernet     = "";
+      format-disabled     = "󰤮";
+      format-disconnected = "󰤫";
+      format-wifi         = "";
+      format-ethernet     = "󰈀";
       tooltip-format      = "{essid}\n\nFrequency: {frequency}GHz\nStrength: {signalStrength}%\n\n{bandwidthUpBytes}   {bandwidthDownBytes}";
       menu                = "on-click-right";
       menu-file           = "${home}/.config/waybar/context/network.xml";
@@ -220,6 +220,7 @@ let
       format-on                              = "󰂰";
       format-off                             = "󰂲";
       format-disabled                        = "󰂲";
+      format-no-controller                   = "󰂲";
       format-connected                       = "{device_alias}";
       format-connected-battery               = "{device_alias}";
       tooltip-format                         = "{device_enumerate}";
@@ -273,16 +274,18 @@ let
     };
 
     "custom/start" = {
-      format   = "";
+      format   = "";
       on-click = "walker &";
     };
 
     "custom/ctlcenter" = {
       tooltip   = false;
-      format    = "";
+      format    = "[C]";
       on-click  = "swaync-client -t";
       menu      = "on-click-right";
-      menu-file = "${home}/.config/waybar/context/ctlcenter.xml";
+      menu-file = if cfg.noBattery
+        then "${home}/.config/waybar/context/ctlcenter-desktop.xml"
+        else "${home}/.config/waybar/context/ctlcenter.xml";
       menu-actions = {
         action-1-1 = "hyprctl dispatch exec '[float] kitty -e htop'";
         action-1-2 = "hyprctl dispatch exec '[float] kitty -e btop'";
@@ -290,21 +293,24 @@ let
         action-2-1 = "hyprctl dispatch exec nwg-look";
         action-2-2 = "hyprctl dispatch exec qt6ct";
         action-2-3 = "hyprctl dispatch exec kvantummanager";
+      } // lib.optionalAttrs (!cfg.noBattery) {
         action-3-1 = "hyprctl keyword monitor 'eDP-1,1920x1080@60, auto,1'";
         action-3-2 = "hyprctl keyword monitor 'eDP-1,1920x1080@90, auto,1'";
         action-3-3 = "hyprctl keyword monitor 'eDP-1,1920x1080@144,auto,1'";
         action-4   = "hyprctl reload";
+      } // lib.optionalAttrs cfg.noBattery {
+        action-3   = "hyprctl reload";
       };
     };
 
     "custom/arrow-left" = {
-      format  = "";
+      format  = "<";
       tooltip = false;
       cursor  = true;
     };
 
     "custom/arrow-right" = {
-      format  = "";
+      format  = ">";
       tooltip = false;
       cursor  = true;
     };
@@ -380,6 +386,8 @@ in
     home.file = {
       ".config/waybar/context/network.xml".source  = ./network.xml;
       ".config/waybar/context/ctlcenter.xml".source = ./ctlcenter.xml;
+    } // lib.optionalAttrs cfg.noBattery {
+      ".config/waybar/context/ctlcenter-desktop.xml".source = ./ctlcenter-desktop.xml;
     } // lib.optionalAttrs (cfg.dockedOutput != null) {
       ".config/waybar/config-undocked.json".text =
         builtins.toJSON [ (barConfig cfg.output) ];
