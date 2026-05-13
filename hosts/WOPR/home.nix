@@ -8,9 +8,8 @@
   ];
 
   myHomeModules.desktop.enable = true;
+  myHomeModules.guiPrograms.hyprland.isDesktop = true;
 
-  myHomeModules.guiPrograms.signal.enable = true;
-  myHomeModules.tuiPrograms.opencode.enable = true;
 
   # Host wallpaper
   stylix.image = ../../assets/wall.jpeg;
@@ -22,7 +21,6 @@
     noBattery = true;
   };
 
-  myHomeModules.guiPrograms.hyprland.isDesktop = true;
 
   # Host-specific input device settings.
   wayland.windowManager.hyprland.settings = {
@@ -38,6 +36,13 @@
       natural_scroll = false;
     };
   };
+  # Programs
+  myHomeModules.guiPrograms.signal.enable = true;
+  myHomeModules.guiPrograms.inkscape.enable = true;
+  myHomeModules.guiPrograms.kde-connect.enable = true;
+  myHomeModules.guiPrograms.latex.enable = true;
+  myHomeModules.tuiPrograms.opencode.enable = true;
+
 
   home.stateVersion = "25.11";
 }
