@@ -40,7 +40,7 @@
   myHomeModules.guiPrograms.signal.enable = true;
   myHomeModules.guiPrograms.inkscape.enable = true;
   myHomeModules.guiPrograms.kde-connect.enable = true;
-  myHomeModules.guiPrograms.latex.enable = true;
+  myHomeModules.cliPrograms.latex.enable = true;
   myHomeModules.tuiPrograms.opencode.enable = true;
 
 

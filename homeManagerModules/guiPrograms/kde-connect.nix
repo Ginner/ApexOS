@@ -21,9 +21,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      kdeconnect
-    ];
 
     # Enable the user service
     services.kdeconnect = {
@@ -35,7 +32,7 @@ in
     xdg.desktopEntries = lib.mkIf cfg.autoStart {
       kdeconnect = {
         name = "KDE Connect";
-        exec = "${pkgs.kdeconnect}/bin/kdeconnect-indicator";
+        exec = "kdeconnect-indicator";
         terminal = false;
         categories = [ "Network" ];
         startupNotify = false;
