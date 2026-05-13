@@ -22,10 +22,10 @@
       enable = true;
       createDirectories = true;
       setSessionVariables = true;
-      download = "${config.home.homeDirectory}/INBOX";
-      music = "${config.home.homeDirectory}/MEDIA/Music";
-      videos = "${config.home.homeDirectory}/MEDIA/Videos";
-      pictures = "${config.home.homeDirectory}/MEDIA/Pictures";
+      download = "${config.home.homeDirectory}/Inbox";
+      music = "${config.home.homeDirectory}/Media/Music";
+      videos = "${config.home.homeDirectory}/Media/Videos";
+      pictures = "${config.home.homeDirectory}/Media/Pictures";
       desktop = null;
       documents = null;
       publicShare = null;
