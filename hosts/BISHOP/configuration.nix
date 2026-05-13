@@ -41,7 +41,6 @@
     image = ../../assets/wall.jpeg;
   };
 
-  myHomeModules.tuiPrograms.opencode.enable = true;
   myModules.services.tailscale.enable = true;
 
   # List packages installed in system profile. To search, run:

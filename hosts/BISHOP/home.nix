@@ -10,6 +10,7 @@
   # Enable laptop home configuration
   myHomeModules.laptop.enable = true;
 
+  myHomeModules.tuiPrograms.opencode.enable = true;
   myHomeModules.guiPrograms.signal.enable = true;
 
   # Override stylix wallpaper for BISHOP (NixOS module handles the rest via autoImport)
