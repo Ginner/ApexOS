@@ -10,6 +10,7 @@
   myHomeModules.desktop.enable = true;
 
   myHomeModules.guiPrograms.signal.enable = true;
+  myHomeModules.tuiPrograms.opencode.enable = true;
 
   # Host wallpaper
   stylix.image = ../../assets/wall.jpeg;
@@ -24,12 +25,6 @@
   myHomeModules.guiPrograms.hyprland.isDesktop = true;
 
   # Host-specific input device settings.
-  # TODO: populate after first boot — run `hyprctl devices` to find names.
-  # wayland.windowManager.hyprland.settings = {
-  #   "device[<keyboard-id>]" = {
-  #     sensitivity = 0.0; accel_profile = "flat";
-  #   };
-  # };
   wayland.windowManager.hyprland.settings = {
     monitor = lib.mkForce [
       "desc:Dell Inc. DELL U2717D T4F1X87A735S, preferred, 0x0, 1.0"

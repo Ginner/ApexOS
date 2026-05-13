@@ -33,7 +33,7 @@ in
     myHomeModules.guiPrograms.kde-connect.enable = lib.mkDefault false;
     myHomeModules.cliPrograms.latex.enable       = lib.mkDefault false;
     myHomeModules.tuiPrograms.ncspot.enable      = lib.mkDefault false;
-    myHomeModules.cliPrograms.pass.enable        = lib.mkDefault true;
+    myHomeModules.cliPrograms.pass.enable        = lib.mkDefault false;
     myHomeModules.tuiPrograms.opencode.enable    = lib.mkDefault false;
 
     # Email and contacts (optional, disabled by default)

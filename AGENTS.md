@@ -55,20 +55,20 @@ No changes to `nixosModules/` or `homeManagerModules/` should be required for a 
 
 **Mandatory split convention** — the boundary between the two HM entry points is strict:
 
-| Concern | File | Rationale |
-|---|---|---|
-| `myHomeModules.<bundle>.enable` | `hosts/<h>/home.nix` | Bundle choice is hardware-specific |
-| `home.stateVersion` | `hosts/<h>/home.nix` | Tied to when the host was first installed |
-| Monitor/display profiles (`kanshi`) | `hosts/<h>/home.nix` | Physical monitors differ per machine |
-| Wallpaper (`stylix.image`) | `hosts/<h>/home.nix` | May vary per machine; host is the override point |
-| Stylix target overrides | `hosts/<h>/home.nix` | Display-specific theming decisions |
-| sops age key path | `users/<u>/home.nix` | Key lives with the user, not the host |
-| `sops.defaultSopsFile` pointer | `users/<u>/home.nix` | Secrets belong to the user |
-| Email accounts | `users/<u>/home.nix` | Identity follows the user, not the machine |
-| Git identity | `users/<u>/home.nix` | Portable across all hosts |
-| SSH match blocks | `users/<u>/home.nix` | Remote access config is user-level |
-| Program enables (user preference) | `users/<u>/home.nix` | e.g. `neomutt`, `khard`, `opencode` |
-| User-scoped packages | `users/<u>/home.nix` | e.g. `rbw` |
+| Concern                             | File                 | Rationale                                        |
+| ----------------------------------- | -------------------- | ------------------------------------------------ |
+| `myHomeModules.<bundle>.enable`     | `hosts/<h>/home.nix` | Bundle choice is hardware-specific               |
+| `home.stateVersion`                 | `hosts/<h>/home.nix` | Tied to when the host was first installed        |
+| Monitor/display profiles (`kanshi`) | `hosts/<h>/home.nix` | Physical monitors differ per machine             |
+| Wallpaper (`stylix.image`)          | `hosts/<h>/home.nix` | May vary per machine; host is the override point |
+| Stylix target overrides             | `hosts/<h>/home.nix` | Display-specific theming decisions               |
+| sops age key path                   | `users/<u>/home.nix` | Key lives with the user, not the host            |
+| `sops.defaultSopsFile` pointer      | `users/<u>/home.nix` | Secrets belong to the user                       |
+| Email accounts                      | `users/<u>/home.nix` | Identity follows the user, not the machine       |
+| Git identity                        | `users/<u>/home.nix` | Portable across all hosts                        |
+| SSH match blocks                    | `users/<u>/home.nix` | Remote access config is user-level               |
+| Program enables (user preference)   | `users/<u>/home.nix` | e.g. `neomutt`, `khard`, `opencode`              |
+| User-scoped packages                | `users/<u>/home.nix` | e.g. `rbw`                                       |
 
 The test: *would this setting change if the same user switched to a different machine?*
 - No → `users/<u>/home.nix`
@@ -87,20 +87,20 @@ Secrets are managed by [sops-nix](https://github.com/Mic92/sops-nix):
 
 ## Flake inputs
 
-| Input | Purpose |
-|---|---|
-| nixpkgs | nixos-unstable channel |
-| home-manager | User environment management |
-| sops-nix | Secret management (sops + age encryption) |
-| hyprland | Wayland compositor (from upstream flake) |
-| nixvim | Neovim configuration as NixOS/HM module |
-| yazi | Terminal file manager (bleeding-edge build) |
-| rose-pine-hyprcursor | Cursor theme |
-| stylix | System-wide theming (base16) |
-| ags | Shell/widget toolkit |
-| xremap-flake | Key remapping service |
-| taskfinder | Personal tool (Codeberg) |
-| walker | Application launcher |
+| Input                | Purpose                                     |
+| -------------------- | ------------------------------------------- |
+| nixpkgs              | nixos-unstable channel                      |
+| home-manager         | User environment management                 |
+| sops-nix             | Secret management (sops + age encryption)   |
+| hyprland             | Wayland compositor (from upstream flake)    |
+| nixvim               | Neovim configuration as NixOS/HM module     |
+| yazi                 | Terminal file manager (bleeding-edge build) |
+| rose-pine-hyprcursor | Cursor theme                                |
+| stylix               | System-wide theming (base16)                |
+| ags                  | Shell/widget toolkit                        |
+| xremap-flake         | Key remapping service                       |
+| taskfinder           | Personal tool (Codeberg)                    |
+| walker               | Application launcher                        |
 
 All inputs follow `nixpkgs` via `inputs.nixpkgs.follows = "nixpkgs"`.
 
@@ -163,13 +163,13 @@ nix eval .#nixosConfigurations.BISHOP.config.services.greetd.enable  # inspect
 
 Skill files in `skills/` contain step-by-step workflows and repo-specific patterns for common tasks. **Before beginning any task that matches a category below, read the corresponding skill file in full.**
 
-| Task | Skill file |
-|---|---|
-| Adding or editing a Home Manager module | `skills/new-home-module.md` |
-| Adding or editing a NixOS module | `skills/new-nixos-module.md` |
-| Provisioning a new host | `skills/new-host.md` |
-| Adding a new user | `skills/new-user.md` |
-| Any Nix expression authoring or pattern questions | `skills/nix-patterns.md` |
+| Task                                              | Skill file                   |
+| ------------------------------------------------- | ---------------------------- |
+| Adding or editing a Home Manager module           | `skills/new-home-module.md`  |
+| Adding or editing a NixOS module                  | `skills/new-nixos-module.md` |
+| Provisioning a new host                           | `skills/new-host.md`         |
+| Adding a new user                                 | `skills/new-user.md`         |
+| Any Nix expression authoring or pattern questions | `skills/nix-patterns.md`     |
 
 ## Known issues / deviations from ideal architecture
 

@@ -59,6 +59,4 @@
       };
     };
   };
-
-  myHomeModules.tuiPrograms.opencode.enable = true;
 }
