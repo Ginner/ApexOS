@@ -36,7 +36,7 @@ let
         click-to-reveal          = false;
       };
       modules = [
-        "custom/start"
+        "image#start"
         "custom/poweroff"
         "custom/reboot"
         "custom/lock"
@@ -102,24 +102,28 @@ let
       on-scroll-up    = "hyprctl dispatch workspace e-1";
       sort-by         = "number";
       all-outputs     = true;
-      format-icons = {
-        "1"      = "󰋙";
-        "2"      = "󰋙";
-        "3"      = "󰋙";
-        "4"      = "󰋙";
-        "5"      = "󰋙";
-        "6"      = "󰋙";
-        "7"      = "󰋙";
-        "8"      = "󰋙";
-        "9"      = "󰋙";
-        "10"     = "󰋙";
-        "active" = "󰋘";
-        "default" = "󰋙";
-        "empty"   = "󰋙";
-      };
-      persistent-workspaces = {
-        "*" = [1 2 3 4 5 6 7 8 9 10];
-      };
+      format-icons =
+        let
+          label = hex: n: "<span letter_spacing='-11120'>${hex}</span><span size='5pt' rise='2450' font_weight='bold'>${n}</span>";
+          inactive = "󰋙";
+        in {
+          "1"  = label inactive "1";
+          "2"  = label inactive "2";
+          "3"  = label inactive "3";
+          "4"  = label inactive "4";
+          "5"  = label inactive "5";
+          "6"  = label inactive "6";
+          "7"  = label inactive "7";
+          "8"  = label inactive "8";
+          "9"  = label inactive "9";
+          "10" = label inactive "0";
+          "active"  = "󰋘";
+          "default" = label inactive "";
+          "empty"   = label inactive "";
+        };
+      # persistent-workspaces = {
+      #   "*" = [1 2 3 4 5 6 7 8 9 10];
+      # };
     };
 
     "cpu" = {
@@ -282,8 +286,9 @@ let
       max-length = 45;
     };
 
-    "custom/start" = {
-      format   = "";
+    "image#start" = {
+      path    = "${../../../assets/Apex-logo-V1-dark.svg}";
+      size    = 18;
       tooltip = false;
       # on-click = "walker &";
     };

@@ -110,7 +110,7 @@
 }
 
 #power-profiles-daemon,
-#custom-start {
+#start {
     margin-right: 7px;
 }
 
@@ -137,7 +137,6 @@
     color: @green;
 }
 
-#custom-start,
 #custom-ctlcenter {
     color: @blue;
 }
@@ -154,6 +153,7 @@
 #workspaces button:hover {
     background: transparent;
 }
+
 
 #mpris.paused {
     color: @inactive;
