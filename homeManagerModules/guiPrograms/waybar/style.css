@@ -36,19 +36,18 @@
 }
 
 /* ── Global module paddings ──────────────────────────────────────────── */
+#custom-poweroff,
+#custom-reboot,
+#custom-lock,
 #temperature,
 #bluetooth,
 #battery,
 #memory,
-#window,
+#mpris,
 #cpu,
+#network,
 #load {
     padding: 1px 7px;
-}
-
-#network,
-#tray {
-    padding: 1px 6px;
 }
 
 #backlight,
@@ -65,13 +64,16 @@
     padding: 0 7px 0 2px;
 }
 
+#custom-poweroff,
+#custom-reboot,
+#custom-lock,
 #workspaces,
 #bluetooth,
 #battery,
 #memory,
 #temperature,
 #cpu,
-#window,
+#mpris,
 #load {
     margin: 0 3px;
 }
@@ -152,6 +154,11 @@
 #workspaces button:hover {
     background: transparent;
 }
+
+#mpris.paused {
+    color: @inactive;
+}
+
 
 /* ── Tooltips ────────────────────────────────────────────────────────── */
 tooltip {

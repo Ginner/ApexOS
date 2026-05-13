@@ -3,6 +3,10 @@
 let
   cfg = config.myHomeModules.guiPrograms.waybar;
   home = config.home.homeDirectory;
+  # Stylix base16 hex values (with '#' prefix) for Pango markup.
+  # CSS custom properties (@baseXX) cannot be resolved in calendar format
+  # strings, so we read the palette at eval time instead.
+  c = config.lib.stylix.colors.withHashtag;
 
   # All module definitions and layout in one place.  barConfig is called
   # once per bar instance (undocked / docked), differing only in `output`.
@@ -12,15 +16,15 @@ let
     output   = output;
     position = "top";
     height   = 25;
-    margin   = "5 0";
+    margin   = "5 4";
     # width is intentionally omitted — Waybar fills the output automatically.
 
-    # ── Layout (with_window variant) ───────────────────────────────────
+    # ── Layout ───────────────────────────────────
     "group/left" = {
       orientation = "horizontal";
       modules = [
         "hyprland/workspaces"
-        "hyprland/window"
+        "mpris"
       ];
     };
 
@@ -28,23 +32,21 @@ let
       orientation = "horizontal";
       drawer = {
         transition-duration      = 500;
-        transition-left-to-right = false;
-        click-to-reveal          = true;
+        transition-left-to-right = true;
+        click-to-reveal          = false;
       };
       modules = [
-        "custom/arrow-right"
-      ] ++ lib.optionals (!cfg.noBattery) [
-        "battery"
-      ] ++ [
-        "cpu"
-        "load"
+        "custom/start"
+        "custom/poweroff"
+        "custom/reboot"
+        "custom/lock"
       ];
     };
 
     "group/left-hidden-top" = {
       orientation = "horizontal";
       modules = [
-        "custom/start"
+        # "custom/start"
         "group/left-hidden"
       ];
     };
@@ -52,13 +54,19 @@ let
     "group/right" = {
       orientation = "horizontal";
       modules = [
-        "bluetooth"
         "group/group-volume"
       ] ++ lib.optionals (!cfg.noBattery) [
         "group/group-backlight"
       ] ++ [
+        "cpu"
+        "load"
+        "memory"
+        "temperature"
+        "bluetooth"
         "network"
-        "tray"
+      ] ++ lib.optionals (!cfg.noBattery) [
+        "battery"
+      ] ++ [
       ];
     };
 
@@ -71,8 +79,6 @@ let
       };
       modules = [
         "custom/arrow-left"
-        "memory"
-        "temperature"
       ];
     };
 
@@ -91,12 +97,11 @@ let
     # ── Module definitions ────────────────────────────────────────────
 
     "hyprland/workspaces" = {
-      format         = "{icon}";
-      on-scroll-down = "hyprctl dispatch workspace e+1";
-      on-scroll-up   = "hyprctl dispatch workspace e-1";
-      "sort-by"      = "number";
-      "all-outputs"  = true;
-      cursor         = true;
+      format          = "{icon}";
+      on-scroll-down  = "hyprctl dispatch workspace e+1";
+      on-scroll-up    = "hyprctl dispatch workspace e-1";
+      sort-by         = "number";
+      all-outputs     = true;
       format-icons = {
         "1"      = "󰋙";
         "2"      = "󰋙";
@@ -109,44 +114,37 @@ let
         "9"      = "󰋙";
         "10"     = "󰋙";
         "active" = "󰋘";
-        "default" = "";
-        "empty"   = "";
+        "default" = "󰋙";
+        "empty"   = "󰋙";
       };
-    };
-
-    "hyprland/window" = {
-      max-length = 45;
+      persistent-workspaces = {
+        "*" = [1 2 3 4 5 6 7 8 9 10];
+      };
     };
 
     "cpu" = {
       interval = 30;
       format   = " {usage}%";
-      cursor   = true;
       states = {
         warning  = 80;
         critical = 90;
       };
-    };
-
-    "tray" = {
-      icon-size = 13;
-      spacing   = 12;
-      cursor    = true;
     };
 
     "load" = {
       interval = 30;
-      format   = " {load1}%";
-      cursor   = true;
+      format   = "󰖡 {load1}%";
     };
 
     "memory" = {
       interval = 10;
-      format   = " {used:0.1f}G/{total:0.1f}G";
+      format   = " {used:0.1f}G";
+      # format   = " {used:0.1f}G/{total:0.1f}G";
       states = {
         warning  = 80;
         critical = 90;
       };
+      tooltip = false;
     };
 
     "temperature" = {
@@ -247,18 +245,19 @@ let
     "clock" = {
       tooltip-format = "<tt><small>{calendar}</small></tt>";
       format-alt     = "{:%H:%M %d %B %Y}";
-      # Calendar format strings are rendered via Pango markup, which cannot
-      # resolve CSS custom properties (@base0D etc.) — use plain markup only.
+      # Calendar format strings use Pango markup. CSS custom properties
+      # (@baseXX) are not resolvable here, so we interpolate Stylix hex
+      # values at eval time via config.lib.stylix.colors.withHashtag.
       calendar = {
         mode         = "year";
         weeks-pos    = "right";
         mode-mon-col = 3;
         format = {
-          months   = "<b>{}</b>";
-          days     = "{}";
-          weeks    = "<b>W{}</b>";
-          weekdays = "<b>{}</b>";
-          today    = "<b><u>{}</u></b>";
+          months   = "<span color='${c.base05}'><b>{}</b></span>";
+          days     = "<span color='${c.base05}'>{}</span>";
+          weeks    = "<span color='${c.base0D}'><b>W{}</b></span>";
+          weekdays = "<span color='${c.base0A}'><b>{}</b></span>";
+          today    = "<span color='${c.base0C}'><b><u>{}</u></b></span>";
         };
       };
     };
@@ -272,10 +271,21 @@ let
         power-saver = "󰾆";
       };
     };
+    "mpris" = {
+      format= "{artist} - {title}";
+      tooltip-format  = "{album}";
+      format-paused = " {artist} - {title}";
+      on-click = "playerctl play-pause";
+      on-scroll-up = "playerctl previous";
+      on-scroll-down = "playerctl next";
+      tooltip = false;
+      max-length = 45;
+    };
 
     "custom/start" = {
       format   = "";
-      on-click = "walker &";
+      tooltip = false;
+      # on-click = "walker &";
     };
 
     "custom/ctlcenter" = {
@@ -312,7 +322,24 @@ let
     "custom/arrow-right" = {
       format  = "";
       tooltip = false;
-      cursor  = true;
+    };
+
+    "custom/poweroff" = {
+      format = "";
+      tooltip-format = "Shut down";
+      on-click = "poweroff";
+    };
+
+    "custom/reboot" = {
+      format = "󰜉";
+      tooltip-format = "Reboot";
+      on-click = "reboot";
+    };
+
+    "custom/lock" = {
+      format = "";
+      tooltip-format = "Lock";
+      on-click = "hyprlock";
     };
 
     "group/group-volume" = {
@@ -394,6 +421,7 @@ in
       ".config/waybar/config-docked.json".text =
         builtins.toJSON [ (barConfig cfg.dockedOutput) ];
     };
+    services.playerctld.enable = true;
 
     programs.waybar = {
       enable = true;
