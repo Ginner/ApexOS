@@ -120,7 +120,7 @@ let
 
     "cpu" = {
       interval = 30;
-      format   = " {usage}%";
+      format   = " {usage}%";
       cursor   = true;
       states = {
         warning  = 80;
@@ -142,7 +142,7 @@ let
 
     "memory" = {
       interval = 10;
-      format   = "  {used:0.1f}G/{total:0.1f}G";
+      format   = " {used:0.1f}G/{total:0.1f}G";
       states = {
         warning  = 80;
         critical = 90;
@@ -153,7 +153,7 @@ let
       interval           = 10;
       format             = "{icon} {temperatureC}°";
       critical-threshold = 90;
-      format-icons       = [ "" "" "" "" "" ];
+      format-icons       = [ "" "" "" "" "" ];
     };
 
     "backlight" = {
@@ -304,13 +304,13 @@ let
     };
 
     "custom/arrow-left" = {
-      format  = "<";
+      format  = "";
       tooltip = false;
       cursor  = true;
     };
 
     "custom/arrow-right" = {
-      format  = ">";
+      format  = "";
       tooltip = false;
       cursor  = true;
     };
