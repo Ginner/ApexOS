@@ -13,6 +13,11 @@ in
       default = {};
       description = "Forwarded to programs.ssh.matchBlocks";
     };
+    includes = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [];
+      description = "File globs forwarded to programs.ssh.includes (rendered as Include directives at the top of ~/.ssh/config, before any Host/Match blocks). Non-existent paths are silently ignored by ssh.";
+    };
     extraConfig = lib.mkOption { type = lib.types.lines; default = ""; };
   };
 
@@ -20,6 +25,7 @@ in
     programs.ssh = {
       enable = true;
       enableDefaultConfig = false;
+      includes = cfg.includes;
       extraConfig = cfg.extraConfig;
       matchBlocks =
         cfg.matchBlocks

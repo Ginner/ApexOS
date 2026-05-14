@@ -41,6 +41,10 @@
   # SSH match blocks
   myHomeModules.cliPrograms.ssh = {
     enable = true;
+    # Optional user-supplied file for host entries that should not live in the
+    # repo (e.g. private IPs). Create ~/.ssh/extra_hosts with standard ssh_config
+    # Host blocks. If the file is absent ssh silently ignores the Include.
+    includes = [ "~/.ssh/extra_hosts" ];
     matchBlocks = {
       "github.com" = {
         user           = "git";
@@ -55,6 +59,17 @@
       "codeberg" = {
         user           = "git";
         hostname       = "codeberg.org";
+        identityFile   = "~/.ssh/id_ed25519";
+      };
+      "AMEE" = {
+        user = "ginner";
+        hostname = "100.64.0.1";
+        port = "2248";
+        identityFile   = "~/.ssh/id_ed25519";
+      };
+      "GLaDOS" = {
+        user = "ginner";
+        hostname = "100.64.0.5";
         identityFile   = "~/.ssh/id_ed25519";
       };
     };
