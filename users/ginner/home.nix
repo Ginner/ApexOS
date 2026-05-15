@@ -64,7 +64,7 @@
       "AMEE" = {
         user = "ginner";
         hostname = "100.64.0.1";
-        port = "2248";
+        port = 2248;
         identityFile   = "~/.ssh/id_ed25519";
       };
       "GLaDOS" = {
