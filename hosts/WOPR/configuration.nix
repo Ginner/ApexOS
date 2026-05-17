@@ -49,6 +49,7 @@
 
 
   myModules.services.tailscale.enable = true;
+  myModules.services.kde-connect.enable = true;
 
   environment.systemPackages = with pkgs; [ home-manager ];
 

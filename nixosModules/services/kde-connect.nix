@@ -1,56 +1,26 @@
-{ pkgs, lib, config, ... }:
+{ lib, config, ... }:
 
 let
   cfg = config.myModules.services.kde-connect;
 in
 {
   options.myModules.services.kde-connect = {
-    enable = lib.mkEnableOption "KDE Connect firewall support";
-
-    openFirewall = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Open firewall ports for KDE Connect";
-    };
-
-    indicatorPort = lib.mkOption {
-      type = lib.types.int;
-      default = 1716;
-      description = "KDE Connect indicator port";
-    };
-
-    portRange = {
-      min = lib.mkOption {
-        type = lib.types.int;
-        default = 1714;
-        description = "Minimum port in KDE Connect range";
-      };
-      max = lib.mkOption {
-        type = lib.types.int;
-        default = 1764;
-        description = "Maximum port in KDE Connect range";
-      };
-    };
+    enable = lib.mkEnableOption "KDE Connect firewall and mDNS support";
   };
 
   config = lib.mkIf cfg.enable {
-    # Open firewall ports for KDE Connect
-    networking.firewall = lib.mkIf cfg.openFirewall {
-      allowedTCPPortRanges = [
-        { from = cfg.portRange.min; to = cfg.portRange.max; }
-      ];
-      allowedUDPPortRanges = [
-        { from = cfg.portRange.min; to = cfg.portRange.max; }
-      ];
-      allowedTCPPorts = [ cfg.indicatorPort ];
-      allowedUDPPorts = [ cfg.indicatorPort ];
+    # KDE Connect requires ports 1714–1764 (TCP+UDP). These are not optional —
+    # the service will not function without them.
+    networking.firewall = {
+      allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
+      allowedUDPPortRanges = [ { from = 1714; to = 1764; } ];
     };
 
-    # Enable necessary services for KDE Connect to work properly
+    # Avahi provides mDNS device discovery on the local network.
     services.avahi = {
       enable = true;
       nssmdns4 = true;
-      openFirewall = cfg.openFirewall;
+      openFirewall = true;
     };
   };
 }

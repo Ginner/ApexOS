@@ -192,6 +192,17 @@ The priority order is `[ "hyprland" "gtk" ]` (`common.default` in `homeManagerMo
 
 Configuration lives entirely in `homeManagerModules/services/xdg.nix`. No host-level overrides are needed.
 
+## KDE Connect
+
+Enabled via two modules that must both be active:
+
+| Module | What it does |
+|---|---|
+| `myModules.services.kde-connect.enable = true` | Opens TCP+UDP ports 1714–1764 in the firewall; enables Avahi (mDNS) for device discovery |
+| `myHomeModules.guiPrograms.kde-connect.enable = true` | Runs the user service and indicator |
+
+Enabling KDE Connect **opens a port range on the local firewall** and **enables mDNS advertisement** via Avahi. Both are required for the service to function — there is no partial or firewall-free mode.
+
 ## Post build
 
 ### pass
