@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 {
   # Email toolchain — account definitions drive all config file generation.
@@ -15,16 +20,16 @@
     enable = true;
     accounts = {
       work = {
-        primary     = true;
-        imapHost    = "imap.startmail.com";
-        smtpHost    = "smtp.startmail.com";
-        macroKey    = "1";
+        primary = true;
+        imapHost = "imap.startmail.com";
+        smtpHost = "smtp.startmail.com";
+        macroKey = "1";
       };
       private = {
-        primary     = false;
-        imapHost    = "imap.startmail.com";
-        smtpHost    = "smtp.startmail.com";
-        macroKey    = "2";
+        primary = false;
+        imapHost = "imap.startmail.com";
+        smtpHost = "smtp.startmail.com";
+        macroKey = "2";
       };
     };
   };
@@ -34,7 +39,7 @@
 
   # Git identity
   programs.git.settings.user = {
-    name  = "Ginner";
+    name = "Ginner";
     email = "26798615+Ginner@users.noreply.github.com";
   };
 
@@ -45,32 +50,32 @@
     # repo (e.g. private IPs). Create ~/.ssh/extra_hosts with standard ssh_config
     # Host blocks. If the file is absent ssh silently ignores the Include.
     includes = [ "~/.ssh/extra_hosts" ];
-    matchBlocks = {
+    settings = {
       "github.com" = {
-        user           = "git";
-        identityFile   = "~/.ssh/id_ed25519";
+        User = "git";
+        IdentityFile = "~/.ssh/id_ed25519";
       };
       "forgejo" = {
-        hostname       = "forgejo.ginnerskov.co";
-        user           = "git";
-        port           = 222;
-        identityFile   = "~/.ssh/id_ed25519";
+        HostName = "forgejo.ginnerskov.co";
+        User = "git";
+        Port = 222;
+        IdentityFile = "~/.ssh/id_ed25519";
       };
       "codeberg" = {
-        user           = "git";
-        hostname       = "codeberg.org";
-        identityFile   = "~/.ssh/id_ed25519";
+        User = "git";
+        HostName = "codeberg.org";
+        IdentityFile = "~/.ssh/id_ed25519";
       };
       "AMEE" = {
-        user = "ginner";
-        hostname = "100.64.0.1";
-        port = 2248;
-        identityFile   = "~/.ssh/id_ed25519";
+        User = "ginner";
+        HostName = "100.64.0.1";
+        Port = 2248;
+        IdentityFile = "~/.ssh/id_ed25519";
       };
       "GLaDOS" = {
-        user = "ginner";
-        hostname = "100.64.0.5";
-        identityFile   = "~/.ssh/id_ed25519";
+        User = "ginner";
+        HostName = "100.64.0.5";
+        IdentityFile = "~/.ssh/id_ed25519";
       };
     };
   };
