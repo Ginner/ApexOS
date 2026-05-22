@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 # Email toolchain module — mbsync, msmtp, notmuch, and per-account sops templates.
 #
@@ -46,43 +51,53 @@ let
   cfg = config.myHomeModules.services.email;
 
   # Sorted account list: primary first, then rest alphabetically
-  accountList = let
-    primary = lib.filter (a: a.primary) (lib.attrValues cfg.accounts);
-    others  = lib.filter (a: !a.primary) (lib.attrValues cfg.accounts);
-  in primary ++ (lib.sortOn (a: a.name) others);
+  accountList =
+    let
+      primary = lib.filter (a: a.primary) (lib.attrValues cfg.accounts);
+      others = lib.filter (a: !a.primary) (lib.attrValues cfg.accounts);
+    in
+    primary ++ (lib.sortOn (a: a.name) others);
 
   primaryAccount = lib.findFirst (a: a.primary) null accountList;
 
   # Resolve an account's sops placeholder by its secret key name
   ph = secretKey: config.sops.placeholder.${secretKey};
 
-  # Generate the isyncrc stanza for one account
-  mkIsyncStanza = a: ''
-    IMAPAccount ${a.name}
-    CertificateFile /etc/ssl/certs/ca-certificates.crt
-    Host ${a.imapHost}
-    PassCmd "${ph a.passwordSecret}"
-    Port ${toString a.imapPort}
-    TLSType IMAPS
-    User ${ph a.addressSecret}
+  secretPath = secretKey: config.sops.secrets.${secretKey}.path;
 
+  concatStanzas = f: xs: lib.concatStringsSep "\n" (map f xs);
+
+  # Generate the isyncrc store stanzas for one account. This follows the syntax
+  # from the previous working mbsyncrc; notably, "Subfolders" is case-sensitive.
+  mkIsyncStores = a: ''
     IMAPStore ${a.name}-remote
-    Account ${a.name}
+    Host ${a.imapHost}
+    Port ${toString a.imapPort}
+    User ${ph a.addressSecret}
+    PassCmd "cat ${secretPath a.passwordSecret}"
+    AuthMechs LOGIN
+    TLSType IMAPS
+    CertificateFile /etc/ssl/certs/ca-certificates.crt
 
     MaildirStore ${a.name}-local
-    Inbox ${config.xdg.dataHome}/mail/${a.name}/INBOX
+    Subfolders Verbatim
     Path ${config.xdg.dataHome}/mail/${a.name}/
-    SubFolders Verbatim
+    Inbox ${config.xdg.dataHome}/mail/${a.name}/INBOX
+  '';
 
+  # Generate the isyncrc channel stanza for one account. Channels are emitted
+  # after all stores because this isync parser does not allow later stores once
+  # it has entered a Channel section.
+  mkIsyncChannel = a: ''
     Channel ${a.name}
-    Create Both
     Expunge Both
     Far :${a.name}-remote:
     Near :${a.name}-local:
     Patterns ${lib.concatStringsSep " " a.mbsyncPatterns}
-    Remove None
+    Create Both
     SyncState *
-    PostSyncHook notmuch new
+    MaxMessages 0
+    ExpireUnread no
   '';
 
   # Generate the msmtp stanza for one account
@@ -91,7 +106,7 @@ let
     auth on
     from ${ph a.addressSecret}
     host ${a.smtpHost}
-    passwordeval ${ph a.passwordSecret}
+    passwordeval cat ${secretPath a.passwordSecret}
     port ${toString a.smtpPort}
     tls on
     tls_starttls off
@@ -123,17 +138,38 @@ let
     # MRA section
     set folder='${config.xdg.dataHome}/mail/${a.name}'
     set from='${ph a.addressSecret}'
-    set postponed='+Drafts'
+    set postponed='+${a.draftsFolder}'
     set realname='${ph a.realnameSecret}'
-    set record='+Sent'
+    set record='+${a.sentFolder}'
     set spoolfile='+INBOX'
-    set trash='+Trash'
+    set trash='+${a.trashFolder}'
+
+    macro index,pager gi "<change-folder>=INBOX<enter>" "go to inbox"
+    macro index,pager Mi ";<save-message>=INBOX<enter>" "move mail to inbox"
+    macro index,pager Ci ";<copy-message>=INBOX<enter>" "copy mail to inbox"
+    macro index,pager gd "<change-folder>=${a.draftsFolder}<enter>" "go to drafts"
+    macro index,pager Md ";<save-message>=${a.draftsFolder}<enter>" "move mail to drafts"
+    macro index,pager Cd ";<copy-message>=${a.draftsFolder}<enter>" "copy mail to drafts"
+    macro index,pager gj "<change-folder>=${a.spamFolder}<enter>" "go to junk"
+    macro index,pager Mj ";<save-message>=${a.spamFolder}<enter>" "move mail to junk"
+    macro index,pager Cj ";<copy-message>=${a.spamFolder}<enter>" "copy mail to junk"
+    macro index,pager gt "<change-folder>=${a.trashFolder}<enter>" "go to trash"
+    macro index,pager Mt ";<save-message>=${a.trashFolder}<enter>" "move mail to trash"
+    macro index,pager Ct ";<copy-message>=${a.trashFolder}<enter>" "copy mail to trash"
+    macro index,pager gs "<change-folder>=${a.sentFolder}<enter>" "go to sent"
+    macro index,pager Ms ";<save-message>=${a.sentFolder}<enter>" "move mail to sent"
+    macro index,pager Cs ";<copy-message>=${a.sentFolder}<enter>" "copy mail to sent"
+    macro index,pager ga "<change-folder>=${a.archiveFolder}<enter>" "go to archive"
+    macro index,pager Ma ";<save-message>=${a.archiveFolder}<enter>" "move mail to archive"
+    macro index,pager Ca ";<copy-message>=${a.archiveFolder}<enter>" "copy mail to archive"
 
     unset signature
 
     # notmuch section
     set nm_default_uri = "notmuch://${config.xdg.dataHome}/mail"
     virtual-mailboxes "My INBOX" "notmuch://?query=tag%3Ainbox"
+
+    ${lib.optionalString (a.extraNeomuttConfigSecret != null) (ph a.extraNeomuttConfigSecret)}
   '';
 
 in
@@ -142,82 +178,126 @@ in
     enable = lib.mkEnableOption "email toolchain (mbsync, msmtp, notmuch, neomutt account files)";
 
     accounts = lib.mkOption {
-      default = {};
+      default = { };
       description = ''
         Attrset of email accounts. Each key is the account name (used as maildir
         subdirectory name, msmtp account name, and neomutt source file name).
         Exactly one account must have primary = true.
       '';
-      type = lib.types.attrsOf (lib.types.submodule ({ name, ... }: {
-        options = {
-          name = lib.mkOption {
-            type = lib.types.str;
-            default = name;
-            description = "Account name (derived from attrset key).";
-          };
+      type = lib.types.attrsOf (
+        lib.types.submodule (
+          { name, ... }:
+          {
+            options = {
+              name = lib.mkOption {
+                type = lib.types.str;
+                default = name;
+                description = "Account name (derived from attrset key).";
+              };
 
-          primary = lib.mkOption {
-            type = lib.types.bool;
-            default = false;
-            description = "Mark this as the primary account (exactly one must be true).";
-          };
+              primary = lib.mkOption {
+                type = lib.types.bool;
+                default = false;
+                description = "Mark this as the primary account (exactly one must be true).";
+              };
 
-          imapHost = lib.mkOption {
-            type = lib.types.str;
-            description = "IMAP server hostname.";
-          };
+              imapHost = lib.mkOption {
+                type = lib.types.str;
+                description = "IMAP server hostname.";
+              };
 
-          imapPort = lib.mkOption {
-            type = lib.types.int;
-            default = 993;
-            description = "IMAP port (default 993, IMAPS).";
-          };
+              imapPort = lib.mkOption {
+                type = lib.types.int;
+                default = 993;
+                description = "IMAP port (default 993, IMAPS).";
+              };
 
-          smtpHost = lib.mkOption {
-            type = lib.types.str;
-            description = "SMTP server hostname.";
-          };
+              smtpHost = lib.mkOption {
+                type = lib.types.str;
+                description = "SMTP server hostname.";
+              };
 
-          smtpPort = lib.mkOption {
-            type = lib.types.int;
-            default = 465;
-            description = "SMTP port (default 465, TLS).";
-          };
+              smtpPort = lib.mkOption {
+                type = lib.types.int;
+                default = 465;
+                description = "SMTP port (default 465, TLS).";
+              };
 
-          mbsyncPatterns = lib.mkOption {
-            type = lib.types.listOf lib.types.str;
-            default = [ "*" "!Spam" ];
-            description = "mbsync channel Patterns — folders to sync.";
-          };
+              mbsyncPatterns = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                default = [
+                  "*"
+                  "!Spam"
+                ];
+                description = "mbsync channel Patterns — folders to sync.";
+              };
 
-          macroKey = lib.mkOption {
-            type = lib.types.str;
-            description = ''
-              Neomutt account-switching macro key (e.g. "1" for i1, "2" for i2).
-              Assign unique keys across all accounts.
-            '';
-          };
+              archiveFolder = lib.mkOption {
+                type = lib.types.str;
+                default = "Archive";
+                description = "Archive folder name for neomutt macros.";
+              };
 
-          # Sops secret key names — default to "<accountname>-<field>"
-          addressSecret = lib.mkOption {
-            type = lib.types.str;
-            default = "${name}-address";
-            description = "Key name in the sops YAML for this account's email address.";
-          };
+              draftsFolder = lib.mkOption {
+                type = lib.types.str;
+                default = "Drafts";
+                description = "Drafts folder name for neomutt postponed messages and macros.";
+              };
 
-          realnameSecret = lib.mkOption {
-            type = lib.types.str;
-            default = "${name}-realname";
-            description = "Key name in the sops YAML for this account's display name.";
-          };
+              sentFolder = lib.mkOption {
+                type = lib.types.str;
+                default = "Sent";
+                description = "Sent folder name for neomutt record and macros.";
+              };
 
-          passwordSecret = lib.mkOption {
-            type = lib.types.str;
-            default = "${name}-password";
-            description = "Key name in the sops YAML for this account's password command.";
-          };
-        };
-      }));
+              trashFolder = lib.mkOption {
+                type = lib.types.str;
+                default = "Trash";
+                description = "Trash folder name for neomutt trash and macros.";
+              };
+
+              spamFolder = lib.mkOption {
+                type = lib.types.str;
+                default = "Junk";
+                description = "Spam/junk folder name for neomutt macros.";
+              };
+
+              macroKey = lib.mkOption {
+                type = lib.types.str;
+                description = ''
+                  Neomutt account-switching macro key (e.g. "1" for i1, "2" for i2).
+                  Assign unique keys across all accounts.
+                '';
+              };
+
+              # Sops secret key names — default to "<accountname>-<field>"
+              addressSecret = lib.mkOption {
+                type = lib.types.str;
+                default = "${name}-address";
+                description = "Key name in the sops YAML for this account's email address.";
+              };
+
+              realnameSecret = lib.mkOption {
+                type = lib.types.str;
+                default = "${name}-realname";
+                description = "Key name in the sops YAML for this account's display name.";
+              };
+
+              passwordSecret = lib.mkOption {
+                type = lib.types.str;
+                default = "${name}-password";
+                description = "Key name in the sops YAML for this account's password or app password.";
+              };
+
+              extraNeomuttConfigSecret = lib.mkOption {
+                type = lib.types.nullOr lib.types.str;
+                default = null;
+                description = "Optional key name in the sops YAML containing extra neomutt config for this account.";
+              };
+            };
+          }
+        )
+      );
     };
   };
 
@@ -237,65 +317,80 @@ in
     # msmtpq is bundled inside the msmtp package (no separate derivation needed).
     # notmuch is also here to avoid HM's assertion on user.primaryEmail.
     # All three config files are written by sops templates below.
-    home.packages = with pkgs; [ isync msmtp notmuch ];
+    home.packages = with pkgs; [
+      isync
+      msmtp
+      notmuch
+    ];
 
     # Declare all sops secrets derived from account definitions
-    sops.secrets = lib.mkMerge (map (a: {
-      ${a.addressSecret}  = {};
-      ${a.realnameSecret} = {};
-      ${a.passwordSecret} = {};
-    }) accountList);
+    sops.secrets = lib.mkMerge (
+      map (
+        a:
+        {
+          ${a.addressSecret} = { };
+          ${a.realnameSecret} = { };
+          ${a.passwordSecret} = { };
+        }
+        // lib.optionalAttrs (a.extraNeomuttConfigSecret != null) {
+          ${a.extraNeomuttConfigSecret} = { };
+        }
+      ) accountList
+    );
 
     # All sops templates in one assignment to avoid duplicate attribute errors.
     sops.templates = lib.mkMerge [
       # mbsync config — one stanza per account
       {
         "isyncrc" = {
-          path    = "${config.xdg.configHome}/isyncrc";
-          content = lib.concatMapStrings mkIsyncStanza accountList;
+          path = "${config.xdg.configHome}/isyncrc";
+          content =
+            (concatStanzas mkIsyncStores accountList) + "\n" + (concatStanzas mkIsyncChannel accountList);
         };
       }
 
       # msmtp config — one stanza per account, default = primary
       {
         "msmtp-config" = {
-          path    = "${config.xdg.configHome}/msmtp/config";
-          content = (lib.concatMapStrings mkMsmtpStanza accountList)
-            + "\naccount default : ${primaryAccount.name}\n";
+          path = "${config.xdg.configHome}/msmtp/config";
+          content =
+            (lib.concatMapStrings mkMsmtpStanza accountList) + "\naccount default : ${primaryAccount.name}\n";
         };
       }
 
       # Per-account neomutt identity files
-      (lib.listToAttrs (map (a: {
-        name  = "neomutt-${a.name}";
-        value = {
-          path    = "${config.xdg.configHome}/neomutt/${a.name}";
-          content = mkNeomuttAccountFile a;
-        };
-      }) accountList))
+      (lib.listToAttrs (
+        map (a: {
+          name = "neomutt-${a.name}";
+          value = {
+            path = "${config.xdg.configHome}/neomutt/${a.name}";
+            content = mkNeomuttAccountFile a;
+          };
+        }) accountList
+      ))
 
       # notmuch config — uses primary account address via sops placeholder
       {
         "notmuch-config" = {
-          path    = "${config.xdg.configHome}/notmuch/default/config";
+          path = "${config.xdg.configHome}/notmuch/default/config";
           content = ''
-        [database]
-        path=${config.xdg.dataHome}/mail
+            [database]
+            path=${config.xdg.dataHome}/mail
 
-        [user]
-        name=${ph primaryAccount.realnameSecret}
-        primary_email=${ph primaryAccount.addressSecret}
+            [user]
+            name=${ph primaryAccount.realnameSecret}
+            primary_email=${ph primaryAccount.addressSecret}
 
-        [new]
-        tags=unread;inbox;
-        ignore=.mbsyncstate;.uidvalidity;
+            [new]
+            tags=unread;inbox;
+            ignore=.mbsyncstate;.uidvalidity;
 
-        [search]
-        exclude_tags=deleted;spam;
+            [search]
+            exclude_tags=deleted;spam;
 
-        [maildir]
-        synchronize_flags=true
-      '';
+            [maildir]
+            synchronize_flags=true
+          '';
         };
       }
     ]; # end sops.templates mkMerge

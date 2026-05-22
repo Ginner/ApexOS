@@ -23,12 +23,18 @@
         primary = true;
         imapHost = "imap.startmail.com";
         smtpHost = "smtp.startmail.com";
+        sentFolder = "Sent Messages";
+        trashFolder = "Deleted Messages";
+        extraNeomuttConfigSecret = "work-neomutt-extra-config";
         macroKey = "1";
       };
       private = {
         primary = false;
         imapHost = "imap.startmail.com";
         smtpHost = "smtp.startmail.com";
+        sentFolder = "Sent Messages";
+        trashFolder = "Deleted Messages";
+        extraNeomuttConfigSecret = "private-neomutt-extra-config";
         macroKey = "2";
       };
     };
