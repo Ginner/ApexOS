@@ -6,35 +6,50 @@
 }:
 
 {
-  # Email toolchain — account definitions drive all config file generation.
-  # Sops secret key names default to "<accountname>-address" etc.; override only
-  # if your secrets/email.yaml uses different key names.
-  # The sops YAML file contains: work-address, work-realname, work-password,
-  #                               private-address, private-realname, private-password
+  # Email secrets stay in this host-specific repo; ApexMail only consumes values.
   sops = {
     age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
     defaultSopsFile = ../../secrets/email.yaml;
   };
 
-  myHomeModules.services.email = {
+  sops.secrets = {
+    "work-address" = { };
+    "work-realname" = { };
+    "work-password" = { };
+    "work-neomutt-extra-config" = { };
+    "private-address" = { };
+    "private-realname" = { };
+    "private-password" = { };
+    "private-neomutt-extra-config" = { };
+  };
+
+  apexMail = {
     enable = true;
+    renderBackend = "sops";
     accounts = {
       work = {
         primary = true;
-        imapHost = "imap.startmail.com";
-        smtpHost = "smtp.startmail.com";
+        provider = "startmail";
+        folderPreset = "startmail";
         macroKey = "1";
+        address = "work-address";
+        realname = "work-realname";
+        passwordCommand = "cat ${config.sops.secrets."work-password".path}";
+        extraNeomuttConfig = "work-neomutt-extra-config";
       };
       private = {
         primary = false;
-        imapHost = "imap.startmail.com";
-        smtpHost = "smtp.startmail.com";
+        provider = "startmail";
+        folderPreset = "startmail";
         macroKey = "2";
+        address = "private-address";
+        realname = "private-realname";
+        passwordCommand = "cat ${config.sops.secrets."private-password".path}";
+        extraNeomuttConfig = "private-neomutt-extra-config";
       };
     };
   };
 
-  myHomeModules.tuiPrograms.neomutt.enable = true;
   myHomeModules.tuiPrograms.khard.enable = true;
 
   # Git identity

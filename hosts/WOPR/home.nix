@@ -3,6 +3,7 @@
   imports = [
     ../../homeManagerModules
     ../../users/ginner/home.nix
+    inputs.apex-mail.homeManagerModules.sops
     inputs.nixvim.homeModules.nixvim
     inputs.walker.homeManagerModules.walker
   ];

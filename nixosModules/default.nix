@@ -81,6 +81,7 @@ in
       file
       which
       lm_sensors
+      nixfmt
     ];
 
     # Enable basic services that apply to all systems

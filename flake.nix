@@ -43,6 +43,11 @@
       url = "github:abenz1267/walker";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    apex-mail = {
+      url = "github:Ginner/ApexMail";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
   outputs = { self, nixpkgs, yazi, home-manager, sops-nix, stylix, ... } @ inputs:
