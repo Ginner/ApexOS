@@ -45,14 +45,26 @@
     xdg.mimeApps = {
       enable = true;
       defaultApplications = {
-        "text/*" = [ "nvim.desktop" ];
-        "application/pdf" = [ "zathura.desktop" ];
-        "image/*" = [ "swayimg.desktop" ];
-        "video/*" = [ "mpv.desktop" ];
+        "text/plain" = [ "nvim.desktop" ];
+        "text/markdown" = [ "nvim.desktop" ];
+        "application/x-shellscript" = [ "nvim.desktop" ];
+        "application/pdf" = [
+          "org.pwmt.zathura-pdf-mupdf.desktop"
+          "org.pwmt.zathura.desktop"
+        ];
+        "image/png" = [ "swayimg.desktop" ];
+        "image/jpeg" = [ "swayimg.desktop" ];
+        "image/webp" = [ "swayimg.desktop" ];
+        "video/mp4" = [ "mpv.desktop" ];
       };
       # Example. swayimg is already the default.
       associations.added = {
+        "text/*" = [ "nvim.desktop" ];
         "image/*" = [ "swayimg.desktop" ];
+        "image/png" = [ "swayimg.desktop" ];
+        "image/jpeg" = [ "swayimg.desktop" ];
+        "image/webp" = [ "swayimg.desktop" ];
+        "video/*" = [ "mpv.desktop" ];
       };
     };
   };
