@@ -16,11 +16,17 @@
     "work-address" = { };
     "work-realname" = { };
     "work-password" = { };
+    "work-signature" = { };
     "work-neomutt-extra-config" = { };
     "private-address" = { };
     "private-realname" = { };
     "private-password" = { };
     "private-neomutt-extra-config" = { };
+  };
+
+  sops.templates."work-neomutt-signature" = {
+    path = "${config.xdg.configHome}/neomutt/signature-work";
+    content = config.sops.placeholder."work-signature";
   };
 
   apexMail = {
@@ -35,6 +41,7 @@
         address = "work-address";
         realname = "work-realname";
         passwordCommand = "cat ${config.sops.secrets."work-password".path}";
+        signatureFile = "${config.xdg.configHome}/neomutt/signature-work";
         extraNeomuttConfig = "work-neomutt-extra-config";
       };
       private = {
