@@ -39,9 +39,7 @@ in
     myHomeModules.tuiPrograms.opencode.enable = lib.mkDefault false;
     
     # Email and contacts (optional, disabled by default)
-    myHomeModules.tuiPrograms.neomutt.enable = lib.mkDefault false;
     myHomeModules.tuiPrograms.khard.enable = lib.mkDefault false;
-    myHomeModules.services.email.enable = lib.mkDefault false;
 
     home.packages = with pkgs; [
       # Laptop-specific tools not covered by modules
