@@ -44,6 +44,7 @@
 #battery,
 #memory,
 #mpris,
+#custom-awake,
 #cpu,
 #network,
 #load {
@@ -72,6 +73,7 @@
 #battery,
 #memory,
 #temperature,
+#custom-awake,
 #cpu,
 #mpris,
 #load {
