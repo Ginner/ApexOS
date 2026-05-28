@@ -10,11 +10,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779912621,
-        "narHash": "sha256-gWmikit2JVoF03r/Wh79xOIXCmeDmQzc/3zf3iTDc60=",
+        "lastModified": 1779998597,
+        "narHash": "sha256-k1OQY5QBJ+6/MlJwyj/az5Lm4igXVxD0Tp6lOlnPEho=",
         "owner": "Ginner",
         "repo": "ApexMail",
-        "rev": "f9755e7512f530a023e33cc48bdcc2a372b883ce",
+        "rev": "d7878efdd160307bd25a7f871be81b9dd272e4fe",
         "type": "github"
       },
       "original": {
