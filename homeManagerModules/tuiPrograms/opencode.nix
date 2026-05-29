@@ -43,6 +43,7 @@
             "git diff *" = "allow";
             "git show" = "allow";
             "git show *" = "allow";
+            "nix flake check" = "allow";
             "nix flake check *" = "allow";
             "nix eval *" = "allow";
           };
