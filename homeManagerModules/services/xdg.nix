@@ -26,6 +26,7 @@
       music = "${config.home.homeDirectory}/Media/Music";
       videos = "${config.home.homeDirectory}/Media/Videos";
       pictures = "${config.home.homeDirectory}/Media/Pictures";
+      projects = null;
       desktop = null;
       documents = null;
       publicShare = null;
