@@ -75,6 +75,8 @@ Dock fix: `boltctl list` -> `boltctl enroll <device-id>`
 ## Default module
 The user is set, you need to set a password for the user with `passwd <username>`(_I'm not sure how this works in my setup..._).
 
+`homeManagerModules/cleanup.nix` is enabled by default and removes bootstrap leftovers once Home Manager owns the environment: old zsh history/cache files and the pre-XDG npm cache. 
+
 ## Secrets (sops-nix)
 
 All secrets are managed by [sops-nix](https://github.com/Mic92/sops-nix) and stored encrypted in `secrets/`. Encrypted files are safe to commit — plaintext never enters the Nix store or version control.

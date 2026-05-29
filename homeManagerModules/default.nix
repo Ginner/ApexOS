@@ -9,6 +9,7 @@
 
 {
   imports = [
+    ./cleanup.nix
     ./cliPrograms
     ./guiPrograms
     ./services
