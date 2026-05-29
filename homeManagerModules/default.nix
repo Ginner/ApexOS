@@ -46,6 +46,7 @@
 
     home.sessionVariables = {
       EDITOR = lib.mkDefault "nvim";
+      NPM_CONFIG_CACHE = lib.mkDefault "${config.xdg.cacheHome}/npm";
     };
 
     programs.home-manager.enable = true;

@@ -54,6 +54,11 @@ in
       autosuggestion.enable = cfg.enableAutosuggestions;
       syntaxHighlighting.enable = cfg.enableSyntaxHighlighting;
       enableCompletion = cfg.enableCompletion;
+      completionInit = ''
+        autoload -U compinit
+        mkdir -p "${config.xdg.cacheHome}/zsh"
+        compinit -d "${config.xdg.cacheHome}/zsh/zcompdump"
+      '';
       autocd = cfg.enableAutocd;
       dotDir = cfg.dotDir;
       history = {
