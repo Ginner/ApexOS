@@ -101,6 +101,7 @@ Secrets are managed by [sops-nix](https://github.com/Mic92/sops-nix):
 | xremap-flake         | Key remapping service                       |
 | taskfinder           | Personal tool (Codeberg)                    |
 | walker               | Application launcher                        |
+| tuigreet             | Maintained greetd text greeter fork         |
 
 All inputs follow `nixpkgs` via `inputs.nixpkgs.follows = "nixpkgs"`.
 
@@ -142,6 +143,7 @@ let cfg = config.myModules.services.foo; in
 sudo nixos-rebuild switch --flake .#BISHOP   # build and activate
 sudo nixos-rebuild test --flake .#BISHOP     # test without making boot default
 nix flake update                              # update all inputs
+nix flake update tuigreet                     # update one input
 nix flake check                              # validate flake
 nixfmt **/*.nix                             # format
 nix eval .#nixosConfigurations.BISHOP.config.services.greetd.enable  # inspect

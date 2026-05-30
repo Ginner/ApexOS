@@ -1,13 +1,15 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
+
 let
   cfg = config.myModules.services.greetd;
+  tuigreet = inputs.tuigreet.packages.${pkgs.stdenv.hostPlatform.system}.tuigreet;
 in
 {
   options.myModules.services.greetd = {
     enable = lib.mkEnableOption "Enable greetd display manager";
     sessionCommand = lib.mkOption {
       type = lib.types.str;
-      default = "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd start-hyprland";
+      default = "${tuigreet}/bin/tuigreet --time --remember --cmd start-hyprland";
       description = "Command for default greetd session";
     };
   };

@@ -43,6 +43,10 @@
       url = "github:abenz1267/walker";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    tuigreet = {
+      url = "github:notashelf/tuigreet";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     apex-mail = {
       url = "github:Ginner/ApexMail";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,13 +62,13 @@
     nixosConfigurations = {
       # Copy per-host, could it be 'templated'?
       BISHOP = nixpkgs.lib.nixosSystem {
-      	inherit system;
+       	inherit system;
         specialArgs = { inherit inputs ; };
         modules = [
           # Host configuration
           ./hosts/BISHOP/configuration.nix
-	  sops-nix.nixosModules.sops
-	  home-manager.nixosModules.default
+   	  sops-nix.nixosModules.sops
+   	  home-manager.nixosModules.default
           stylix.nixosModules.stylix
           {
               home-manager.sharedModules = [ sops-nix.homeManagerModules.sops ];
@@ -74,7 +78,7 @@
                 yazi.overlays.default
               ];
             }
-	];
+   	];
       };
       WOPR = nixpkgs.lib.nixosSystem {
         inherit system;
