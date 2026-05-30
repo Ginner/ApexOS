@@ -1,5 +1,11 @@
 # AGENTS.md — NixOS Flake Root
 
+## Scope
+
+This file contains instructions specific to this NixOS flake repository. It refines the global opencode instructions for work inside this repo.
+
+This configuration is used across multiple systems. Before making host-specific assumptions or changes, determine the active host when relevant, for example with `hostname`, and then inspect the matching `hosts/<HOSTNAME>/` configuration.
+
 ## What this repo is
 
 Personal NixOS flake configuration using a modular, bundle-based architecture. Hosts are minimal — they enable a bundle (laptop/desktop/server) and provide host-specific overrides. All reusable configuration lives in `nixosModules/` (system) and `homeManagerModules/` (user).
@@ -35,16 +41,14 @@ flake.nix
 
 ## Secrets and PII policy
 
-**Impure builds are not acceptable.** All evaluation must be reproducible from the flake alone — no `--impure` flag, no files outside the repo injected at eval time.
+**Impure builds are not acceptable.** All evaluation must be reproducible from the flake alone: no `--impure` flag, no files outside the repo injected at eval time, and no `git add -N` trick.
 
 **PII and secrets are distinct concerns and must be handled differently:**
 
 - **Secrets** (passwords, API keys, tokens): must not appear in version control **or** the Nix store. The only acceptable approach is sops-encrypted files committed to `secrets/`, with values injected at activation time via `sops.templates`.
 - **PII** (email addresses, real names, usernames): must not appear in version control, but the Nix store is acceptable. PII is also stored in sops-encrypted files and injected via `sops.templates` — not because the Nix store is unsafe for PII, but because there is no mechanism to provide PII at eval time without either hardcoding it in committed files or using `--impure`.
 
-**Impure builds are not acceptable.** All evaluation must be reproducible from the flake alone — no `--impure` flag, no files outside the repo injected at eval time. The `git add -N` trick is also not acceptable.
-
-**Declarativeness is a core requirement.** Manual post-install steps must be minimised. Any step that cannot be automated must be documented in `README.md`. The goal is: clone repo → restore your age private key → `nixos-rebuild switch` → done. Generating the age private key is the one genuinely irreducible manual step — it is private key material and cannot exist in the repo by definition.
+**For this repo, declarative configuration is a core requirement.** Manual post-install steps must be minimised. Any step that cannot be automated must be documented in `README.md`. The goal is: clone repo → restore your age private key → `nixos-rebuild switch` → done. Generating the age private key is the one genuinely irreducible manual step — it is private key material and cannot exist in the repo by definition.
 
 **User-facing files.** A user adopting this config should only need to edit:
 - `hosts/<hostname>/configuration.nix` — hostname, bundle, hardware
@@ -149,9 +153,10 @@ nixfmt **/*.nix                             # format
 nix eval .#nixosConfigurations.BISHOP.config.services.greetd.enable  # inspect
 ```
 
-## Current hosts in flake outputs
+## Hosts in flake outputs
 
-- **BISHOP** — only host in `nixosConfigurations`
+- **BISHOP**
+- **WOPR**
 
 ## Observed conventions
 
