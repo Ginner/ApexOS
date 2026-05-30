@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ...}:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   options.myHomeModules.services.xdg = {
     enable = lib.mkEnableOption "enable xdg portals";
@@ -14,7 +19,10 @@
         xdg-desktop-portal-gtk
       ];
       config = {
-        common.default = [ "hyprland" "gtk" ];
+        common.default = [
+          "hyprland"
+          "gtk"
+        ];
       };
     };
 
@@ -32,15 +40,22 @@
       publicShare = null;
       templates = null;
     };
-    
+
     xdg.desktopEntries.nvim = {
       name = "Neovim";
       genericName = "Text Editor";
-      exec = "kitty -e nvim %F"; 
+      exec = "kitty -e nvim %F";
       terminal = false;
       type = "Application";
-      categories = [ "Utility" "TextEditor" ];
-      mimeType = [ "text/plain" "text/markdown" "application/x-shellscript" ];
+      categories = [
+        "Utility"
+        "TextEditor"
+      ];
+      mimeType = [
+        "text/plain"
+        "text/markdown"
+        "application/x-shellscript"
+      ];
     };
 
     xdg.mimeApps = {
@@ -56,6 +71,7 @@
         "image/png" = [ "swayimg.desktop" ];
         "image/jpeg" = [ "swayimg.desktop" ];
         "image/webp" = [ "swayimg.desktop" ];
+        "image/svg+xml" = [ "swayimg.desktop" ];
         "video/mp4" = [ "mpv.desktop" ];
       };
       # Example. swayimg is already the default.
@@ -65,6 +81,12 @@
         "image/png" = [ "swayimg.desktop" ];
         "image/jpeg" = [ "swayimg.desktop" ];
         "image/webp" = [ "swayimg.desktop" ];
+        "image/svg+xml" = [
+          "swayimg.desktop"
+        ]
+        ++ lib.optionals (config.myHomeModules.guiPrograms.inkscape.enable or false) [
+          "org.inkscape.Inkscape.desktop"
+        ];
         "video/*" = [ "mpv.desktop" ];
       };
     };
