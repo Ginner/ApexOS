@@ -150,10 +150,18 @@ in
             ];
           }
           {
+            name = "*.{py,nix,js,jsx,ts,tsx,rs,go,lua,sh,bash,zsh,fish,c,h,cpp,hpp,java,kt,kts,rb,php,css,scss,html,xml,json,jsonc,toml,yaml,yml,md,sql}";
+            use = [
+              "edit"
+              "open"
+              "reveal"
+            ];
+          }
+          {
             mime = "text/*";
             use = [
-              "open"
               "edit"
+              "open"
               "reveal"
             ];
           }
