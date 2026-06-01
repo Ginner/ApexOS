@@ -35,6 +35,25 @@ in
               desc = "Enter child dir or open file";
             }
             {
+              on = "q";
+              run = "close";
+              desc = "Close tab or quit";
+            }
+            {
+              on = "Q";
+              run = "quit";
+              desc = "Quit and cd to current dir";
+            }
+            {
+              on = "<C-c>";
+              run = "noop";
+            }
+            {
+              on = "T";
+              run = ''shell '${pkgs.kitty}/bin/kitty --detach --directory "$PWD"' --orphan'';
+              desc = "Open terminal here";
+            }
+            {
               on = [
                 "g"
                 "I"
@@ -150,7 +169,7 @@ in
             ];
           }
           {
-            name = "*.{py,nix,js,jsx,ts,tsx,rs,go,lua,sh,bash,zsh,fish,c,h,cpp,hpp,java,kt,kts,rb,php,css,scss,html,xml,json,jsonc,toml,yaml,yml,md,sql}";
+            url = "*.{py,nix,js,jsx,ts,tsx,rs,go,lua,sh,bash,zsh,fish,c,h,cpp,hpp,java,kt,kts,rb,php,css,scss,html,xml,json,jsonc,toml,yaml,yml,md,sql}";
             use = [
               "edit"
               "open"
