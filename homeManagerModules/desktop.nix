@@ -49,6 +49,7 @@ in
       cheat
       ffmpegthumbnailer
       poppler
+      qpdf
     ];
 
     myHomeModules.cliPrograms.ssh.enableControlMaster = true;

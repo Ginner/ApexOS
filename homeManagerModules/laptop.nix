@@ -53,6 +53,7 @@ in
       cheat     # Could be made into module
       ffmpegthumbnailer
       poppler
+      qpdf
     ];
 
     # Enable ssh connection multiplexing
