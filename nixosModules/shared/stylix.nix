@@ -110,6 +110,7 @@ in
           popups = cfg.fonts.sizes.popups;
         };
       };
+      targets.kmscon.enable = false;  # 2026.06.03: Temp fix for deprecated kmscon definitions 
     };
 
     fonts.packages = with pkgs; [
