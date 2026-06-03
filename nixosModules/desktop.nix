@@ -24,6 +24,7 @@ in
     myModules.services.kde-connect.enable  = lib.mkDefault false;  # Optional
     myModules.services.xremap.enable       = lib.mkDefault true;
     myModules.shared.stylix.enable         = lib.mkDefault true;
+    myModules.shared.nerdFonts.enable      = lib.mkDefault true;
     myModules.programs.sops.enable         = lib.mkDefault true;
     myModules.programs.hyprland.enable     = lib.mkDefault true;
     myModules.programs.usbutils.enable     = lib.mkDefault true;

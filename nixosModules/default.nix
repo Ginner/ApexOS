@@ -13,6 +13,7 @@ in
 
     # Shared modules
     ./shared/stylix.nix
+    ./shared/nerd-fonts.nix
 
     # Bundle modules
     ./laptop.nix
