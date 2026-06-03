@@ -51,6 +51,7 @@
             "nix flake check *" = "allow";
             "nix eval *" = "allow";
             "nixfmt *" = "allow";
+            "hostname" = "allow";
           };
         };
       };
