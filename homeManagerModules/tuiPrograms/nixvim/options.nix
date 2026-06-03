@@ -12,6 +12,8 @@
       showcmd = true;
       cmdheight = 0;
       conceallevel = 2;
+      ignorecase = true;
+      smartcase = true;
 
       # Tab & indentation
       shiftwidth = 2;
