@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ config, pkgs, lib, ... }:
 
 let
   cfg = config.myHomeModules.guiPrograms.hyprland;
@@ -104,7 +99,7 @@ in
           ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle"
           ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%+"
           ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%-"
-          ", XF86ScreenSaver, exec, loginctl lock-session"
+          ", XF86ScreenSaver, exec, pidof hyprlock || hyprlock"
           "$mod, return, exec, kitty"
           "$mod, Q, killactive"
           "$mod, M, exit"
@@ -205,7 +200,7 @@ in
       settings = {
         general = {
           lock_cmd = "pidof hyprlock || hyprlock";
-          before_sleep_cmd = "loginctl lock-session";
+          before_sleep_cmd = "pidof hyprlock || hyprlock --immediate";
           after_sleep_cmd = "hyprctl dispatch dpms on";
         };
         listener =
@@ -219,7 +214,7 @@ in
           ++ [
             {
               timeout = 300;
-              on-timeout = "loginctl lock-session";
+              on-timeout = "pidof hyprlock || hyprlock";
             }
             {
               timeout = 330;
