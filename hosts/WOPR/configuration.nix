@@ -30,6 +30,7 @@
     image  = ../../assets/wall.jpeg;
   };
 
+
   # nVidia stuff
   nixpkgs.config.allowUnfreePredicate = pkg:
     builtins.elem (lib.getName pkg) [
@@ -45,8 +46,26 @@
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.latest;
   };
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
+
+  # ZFS stuff
+  networking.hostId = "9d2f4c8a";
+
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.forceImportRoot = false;
+  boot.zfs.requestEncryptionCredentials = true;
+  services.zfs.autoScrub.enable = true;
+
+  fileSystems."/home/ginner" = {
+    device = "homepool/ginner";
+    fsType = "zfs";
+  };
+
+  boot.kernelPackages = pkgs.linuxPackages;
+
+  myModules.services.greetd.sessionCommand = "start-hyprland";
+  services.greetd.settings.default_session.user = config.userGlobals.username;
+  # ---
 
   myModules.services.tailscale.enable = true;
   myModules.services.kde-connect.enable = true;
