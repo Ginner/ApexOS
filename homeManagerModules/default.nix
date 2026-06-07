@@ -33,8 +33,6 @@
     home.username = lib.mkDefault username;
     home.homeDirectory = lib.mkDefault "/home/${username}";
     home.preferXdgDirectories = lib.mkDefault true;
-    # Adopt HM 26.05 behavior: do not force the GTK3 theme workaround onto GTK4 apps.
-    gtk.gtk4.theme = null;
 
     # Default packages for all users
     home.packages = with pkgs; [
