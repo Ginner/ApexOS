@@ -1,28 +1,5 @@
 {
   "nodes": {
-    "apex-mail": {
-      "inputs": {
-        "home-manager": [
-          "home-manager"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1780313213,
-        "narHash": "sha256-CntPgQ2NE1N6sx6lAqBP9xmWG1F8/TQQ6KQvfnEFrYw=",
-        "owner": "Ginner",
-        "repo": "ApexMail",
-        "rev": "8c32db008e4b979fb1ed4f7ddcbf6fc996ca381f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Ginner",
-        "repo": "ApexMail",
-        "type": "github"
-      }
-    },
     "aquamarine": {
       "inputs": {
         "hyprutils": [
@@ -850,7 +827,6 @@
     },
     "root": {
       "inputs": {
-        "apex-mail": "apex-mail",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
         "nixpkgs": "nixpkgs",

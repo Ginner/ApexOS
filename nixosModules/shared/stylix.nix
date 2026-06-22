@@ -1,4 +1,10 @@
-{ config, lib, pkgs, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
 
 let
   cfg = config.myModules.shared.stylix;
@@ -9,11 +15,15 @@ in
 
     image = lib.mkOption {
       type = lib.types.path;
+      default = ../../assets/default/wallpaper.jpg;
       description = "Wallpaper image for theming";
     };
 
     polarity = lib.mkOption {
-      type = lib.types.enum [ "light" "dark" ];
+      type = lib.types.enum [
+        "light"
+        "dark"
+      ];
       default = "dark";
       description = "Color scheme polarity";
     };
@@ -110,7 +120,7 @@ in
           popups = cfg.fonts.sizes.popups;
         };
       };
-      targets.kmscon.enable = false;  # 2026.06.03: Temp fix for deprecated kmscon definitions 
+      targets.kmscon.enable = false; # 2026.06.03: Temp fix for deprecated kmscon definitions
     };
 
     fonts.packages = with pkgs; [

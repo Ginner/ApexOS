@@ -471,7 +471,7 @@ let
     };
 
     "image#start" = {
-      path = "${../../../assets/Apex-logo-V1-dark.svg}";
+      path = "${cfg.logo}";
       size = 18;
       tooltip = false;
       # on-click = "walker &";
@@ -594,6 +594,12 @@ in
         backlight slider group from the right side.  Set this on desktop
         hosts where neither a battery nor a backlight device is present.
       '';
+    };
+
+    logo = lib.mkOption {
+      type = lib.types.path;
+      default = ../../../assets/default/logo.svg;
+      description = "Logo image used for the Waybar start item.";
     };
   };
 
