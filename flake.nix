@@ -1,5 +1,5 @@
 {
-  description = "System configuration flake";
+  description = "ApexOS reusable NixOS configuration layer";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
@@ -47,57 +47,75 @@
       url = "github:notashelf/tuigreet";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    apex-mail = {
-      url = "github:Ginner/ApexMail";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "home-manager";
-    };
   };
 
-  outputs = { self, nixpkgs, yazi, home-manager, sops-nix, stylix, ... } @ inputs:
-  let
-    system = "x86_64-linux";
-  in
-  {
-    nixosConfigurations = {
-      # Copy per-host, could it be 'templated'?
-      BISHOP = nixpkgs.lib.nixosSystem {
-       	inherit system;
-        specialArgs = { inherit inputs ; };
-        modules = [
-          # Host configuration
-          ./hosts/BISHOP/configuration.nix
-   	  sops-nix.nixosModules.sops
-   	  home-manager.nixosModules.default
-          stylix.nixosModules.stylix
-          {
-              home-manager.sharedModules = [ sops-nix.homeManagerModules.sops ];
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
+  outputs =
+    {
+      self,
+      nixpkgs,
+      yazi,
+      home-manager,
+      sops-nix,
+      stylix,
+      xremap-flake,
+      ...
+    }@inputs:
+    {
+      nixosModules.default = import ./nixosModules;
+      homeManagerModules.default = import ./homeManagerModules;
+
+      lib.mkHost =
+        {
+          hostname,
+          username,
+          system ? "x86_64-linux",
+          modules ? [ ],
+          homeModules ? [ ],
+          specialArgs ? { },
+          extraSpecialArgs ? { },
+        }:
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            inherit inputs;
+          }
+          // specialArgs;
+          modules = [
+            self.nixosModules.default
+            xremap-flake.nixosModules.default
+            sops-nix.nixosModules.sops
+            home-manager.nixosModules.default
+            stylix.nixosModules.stylix
+            {
+              networking.hostName = hostname;
+              userGlobals.username = username;
+
+              sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+
+              home-manager = {
+                sharedModules = [
+                  self.homeManagerModules.default
+                  sops-nix.homeManagerModules.sops
+                  inputs.nixvim.homeModules.nixvim
+                  inputs.walker.homeManagerModules.walker
+                ];
+                extraSpecialArgs = {
+                  inherit inputs username;
+                }
+                // extraSpecialArgs;
+                useGlobalPkgs = true;
+                useUserPackages = true;
+                users.${username}.imports = homeModules;
+              };
+
               nixpkgs.overlays = [
                 yazi.overlays.default
               ];
+
+              nix.nixPath = [ "nixpkgs=${inputs.nixpkgs}" ];
             }
-   	];
-      };
-      WOPR = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/WOPR/configuration.nix
-          sops-nix.nixosModules.sops
-          home-manager.nixosModules.default
-          stylix.nixosModules.stylix
-          {
-            home-manager.sharedModules = [ sops-nix.homeManagerModules.sops ];
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            nixpkgs.overlays = [
-              yazi.overlays.default
-            ];
-          }
-        ];
-      };
+          ]
+          ++ modules;
+        };
     };
-  };
 }
