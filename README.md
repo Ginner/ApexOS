@@ -20,6 +20,7 @@ This repo does not own:
 - host hardware files
 - user identity configuration
 - `.sops.yaml` or encrypted user secret files
+- a `secrets/` directory
 - ApexMail configuration
 
 ## Consumer Shape
@@ -30,8 +31,8 @@ own `nixosConfigurations.<HOSTNAME>`:
 ```nix
 {
   inputs = {
-    apex-os.url = "github:Ginner/ApexOS";
-    user-example.url = "git+ssh://example/user-example";
+    apex-os.url = "github:Ginner/ApexOS/os-layer";
+    user-example.url = "git+ssh://example/user-example.git";
   };
 
   outputs = { apex-os, user-example, ... }: {
@@ -52,6 +53,16 @@ own `nixosConfigurations.<HOSTNAME>`:
 }
 ```
 
+While the split is being stabilised, consumers should pin ApexOS to the
+`os-layer` branch. After that branch is merged, consumers can use
+`github:Ginner/ApexOS`.
+
+Host repos are the rebuild entrypoint:
+
+```bash
+sudo nixos-rebuild switch --flake .#HOSTNAME
+```
+
 ## Split Rule
 
 Use the question: would this setting change if the same user switched machines?
@@ -66,6 +77,9 @@ profiles, input-device quirks, wallpapers, `system.stateVersion`, and
 
 Examples of user-owned config: Git identity, SSH match blocks, email accounts,
 personal sops key path, user secrets, and ApexMail integration.
+
+User flakes own user-level `.sops.yaml` and encrypted user secrets. Host flakes
+may own host-specific secrets if a machine needs them. ApexOS owns neither.
 
 ## Defaults
 

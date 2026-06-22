@@ -21,6 +21,7 @@ ApexOS must not contain:
 - host hardware configuration
 - personal user modules
 - `.sops.yaml` or encrypted personal secret files
+- a `secrets/` directory
 - ApexMail configuration
 - private or host-specific assets
 
@@ -29,6 +30,9 @@ ApexOS must not contain:
 Host flakes import ApexOS and user flakes. A host flake should produce its own
 `nixosConfigurations.<HOSTNAME>` and can use `apex-os.lib.mkHost` for the
 standard module wiring.
+
+Host flakes are the rebuild entrypoint, for example
+`sudo nixos-rebuild switch --flake .#WOPR`.
 
 User flakes own identity and cross-host preferences. ApexMail belongs in a user
 flake, not in ApexOS.
@@ -48,5 +52,7 @@ for assets instead of hardcoding personal paths.
 
 ## Secrets
 
-Secrets and PII are owned by user or host repos. Do not add plaintext secrets,
-private keys, `.sops.yaml`, or encrypted personal secret files to ApexOS.
+Secrets and PII are owned by user or host repos. User flakes own user-level
+`.sops.yaml` and encrypted user secrets. Host flakes may own host-specific
+secrets if needed. Do not add plaintext secrets, private keys, `.sops.yaml`, a
+`secrets/` directory, or encrypted personal secret files to ApexOS.
