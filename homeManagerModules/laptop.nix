@@ -52,7 +52,7 @@ in
       pinentry-tty
       cheat     # Could be made into module
       ffmpegthumbnailer
-      poppler
+      poppler-utils
       qpdf
     ];
 

@@ -48,7 +48,7 @@ in
       pinentry-tty
       cheat
       ffmpegthumbnailer
-      poppler
+      poppler-utils
       qpdf
     ];
 
