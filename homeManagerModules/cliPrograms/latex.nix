@@ -1,7 +1,32 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   cfg = config.myHomeModules.cliPrograms.latex;
+
+  schemePackage =
+    if cfg.scheme == "small" then
+      pkgs.texlive.scheme-small
+    else if cfg.scheme == "medium" then
+      pkgs.texlive.scheme-medium
+    else
+      pkgs.texlive.scheme-full;
+
+  texlivePackage = pkgs.texlive.combine {
+    scheme = schemePackage;
+
+    inherit (pkgs.texlive)
+      latex-bin
+      latexmk
+      xetex
+      collection-latexrecommended
+      collection-fontsrecommended
+      ;
+  };
 in
 {
   options.myHomeModules.cliPrograms.latex = {
@@ -14,17 +39,19 @@ in
     };
 
     scheme = lib.mkOption {
-      type = lib.types.enum [ "small" "medium" "full" ];
+      type = lib.types.enum [
+        "small"
+        "medium"
+        "full"
+      ];
       default = if cfg.enableFull then "full" else "medium";
       description = "LaTeX scheme to install";
     };
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      (if cfg.scheme == "small" then texlive.combined.scheme-small
-       else if cfg.scheme == "medium" then texlive.combined.scheme-medium
-       else texlive.combined.scheme-full)
+    home.packages = [
+      texlivePackage
     ];
   };
 }

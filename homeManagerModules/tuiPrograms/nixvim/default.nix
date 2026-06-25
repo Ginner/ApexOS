@@ -23,6 +23,7 @@ in
     ./plugins/autoclose.nix
     ./plugins/cmp.nix
     ./plugins/treesitter.nix
+    ./plugins/latex.nix
     ./plugins/mkdnflow.nix
   ];
 

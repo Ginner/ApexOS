@@ -90,3 +90,20 @@ these through module options, for example:
 myModules.shared.stylix.image = ./assets/wallpaper.jpg;
 myHomeModules.guiPrograms.waybar.logo = ./assets/logo.svg;
 ```
+
+## LaTeX In Neovim
+
+Enable the Home Manager LaTeX module to install TeX Live tools and enable the
+NixVim LaTeX layer by default:
+
+```nix
+myHomeModules.cliPrograms.latex.enable = true;
+myHomeModules.cliPrograms.latex.scheme = "medium"; # "small", "medium", or "full"
+myHomeModules.tuiPrograms.nixvim.enable = true;
+myHomeModules.guiPrograms.zathura.enable = true;
+```
+
+This configures VimTeX with `latexmk`, XeLaTeX, SyncTeX, Zathura viewing, Texlab
+LSP, LaTeX/BibTeX Treesitter support, and `aux/` for auxiliary files while
+keeping the final PDF next to the `.tex` file. Override with
+`myHomeModules.tuiPrograms.nixvim.latex.enable = false;` if needed.
