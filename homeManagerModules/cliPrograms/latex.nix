@@ -52,7 +52,7 @@ in
     };
 
     extraPackages = lib.mkOption {
-      type = lib.types.functionTo (lib.types.attrsOf lib.types.package);
+      type = lib.types.functionTo (lib.types.attrsOf lib.types.anything);
       default = _: { };
       description = "Additional TeX Live packages to include in the combined distribution.";
       example = lib.literalExpression ''
