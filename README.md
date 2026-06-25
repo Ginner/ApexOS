@@ -107,3 +107,11 @@ This configures VimTeX with `latexmk`, XeLaTeX, SyncTeX, Zathura viewing, Texlab
 LSP, LaTeX/BibTeX Treesitter support, and `aux/` for auxiliary files while
 keeping the final PDF next to the `.tex` file. Override with
 `myHomeModules.tuiPrograms.nixvim.latex.enable = false;` if needed.
+
+Add missing TeX Live packages without switching to `full`:
+
+```nix
+myHomeModules.cliPrograms.latex.extraPackages = texlive: {
+  inherit (texlive) wallpaper enumitem <etc.>;
+};
+```

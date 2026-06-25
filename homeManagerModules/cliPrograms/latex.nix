@@ -16,17 +16,20 @@ let
     else
       pkgs.texlive.scheme-full;
 
-  texlivePackage = pkgs.texlive.combine {
-    scheme = schemePackage;
+  texlivePackage = pkgs.texlive.combine (
+    {
+      scheme = schemePackage;
 
-    inherit (pkgs.texlive)
-      latex-bin
-      latexmk
-      xetex
-      collection-latexrecommended
-      collection-fontsrecommended
-      ;
-  };
+      inherit (pkgs.texlive)
+        latex-bin
+        latexmk
+        xetex
+        collection-latexrecommended
+        collection-fontsrecommended
+        ;
+    }
+    // cfg.extraPackages pkgs.texlive
+  );
 in
 {
   options.myHomeModules.cliPrograms.latex = {
@@ -46,6 +49,17 @@ in
       ];
       default = if cfg.enableFull then "full" else "medium";
       description = "LaTeX scheme to install";
+    };
+
+    extraPackages = lib.mkOption {
+      type = lib.types.functionTo (lib.types.attrsOf lib.types.package);
+      default = _: { };
+      description = "Additional TeX Live packages to include in the combined distribution.";
+      example = lib.literalExpression ''
+        texlive: {
+          inherit (texlive) wallpaper;
+        }
+      '';
     };
   };
 
