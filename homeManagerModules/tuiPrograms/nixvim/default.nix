@@ -50,17 +50,9 @@ in
       };
     };
     home.file = {
+      ".config/nvim/queries/markdown/highlights.scm".source = ./queries/markdown/highlights.scm;
       ".config/nvim/after/queries/markdown/highlights.scm".text = ''
         ;; extends
-        (fenced_code_block
-          (fenced_code_block_delimiter) @noconceal
-          (#set! priority 110))
-
-        (fenced_code_block
-          (info_string
-            (language) @noconceal
-            (#set! priority 110)))
-
         (list_item [
           (list_marker_plus)
           (list_marker_minus)
