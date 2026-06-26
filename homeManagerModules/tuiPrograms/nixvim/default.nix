@@ -38,7 +38,6 @@ in
       vimAlias = true;
       vimdiffAlias = true;
       globals.mapleader = " ";
-      globals.markdown_syntax_conceal = 0;
       clipboard = {
         register = "unnamed";
         providers.wl-copy.enable = true;
@@ -53,6 +52,15 @@ in
     home.file = {
       ".config/nvim/after/queries/markdown/highlights.scm".text = ''
         ;; extends
+        (fenced_code_block
+          (fenced_code_block_delimiter) @noconceal
+          (#set! priority 110))
+
+        (fenced_code_block
+          (info_string
+            (language) @noconceal
+            (#set! priority 110)))
+
         (list_item [
           (list_marker_plus)
           (list_marker_minus)

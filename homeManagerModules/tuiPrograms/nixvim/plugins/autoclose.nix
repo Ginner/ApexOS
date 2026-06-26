@@ -9,6 +9,9 @@
           "'" = {
             disabled_filetypes = [ "markdown" "latex" ];
           };
+          "`" = {
+            disabled_filetypes = [ "markdown" "latex" ];
+          };
         };
       };
     };
