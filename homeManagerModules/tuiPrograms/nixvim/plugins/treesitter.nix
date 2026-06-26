@@ -30,9 +30,6 @@ in
           bibtex
         ];
       settings = {
-        highlight = {
-          enable = true;
-        };
         indent.enable = true;
         autopairs.enable = true;
         textobjects = lib.mkIf cfg.latex.enable {
@@ -61,6 +58,10 @@ in
             };
           };
         };
+      };
+      highlight = {
+        enable = true;
+        disable = lib.optionals cfg.latex.enable [ "latex" ];
       };
     };
 

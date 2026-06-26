@@ -42,6 +42,8 @@ in
           vimtex_quickfix_open_on_warning = 1;
           vimtex_complete_enabled = 0;
           vimtex_fold_enabled = 0;
+          vimtex_syntax_enabled = 1;
+          vimtex_syntax_conceal_disable = 0;
 
           vimtex_compiler_latexmk = {
             callback = 1;
