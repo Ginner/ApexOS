@@ -38,6 +38,7 @@ in
       vimAlias = true;
       vimdiffAlias = true;
       globals.mapleader = " ";
+      globals.markdown_syntax_conceal = 0;
       clipboard = {
         register = "unnamed";
         providers.wl-copy.enable = true;
