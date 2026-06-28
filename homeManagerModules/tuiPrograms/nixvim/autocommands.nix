@@ -3,6 +3,7 @@
 {
   config = lib.mkIf config.myHomeModules.tuiPrograms.nixvim.enable {
     programs.nixvim.autoGroups = {
+      lastplacegrp.clear = true;
       mymdgrp.clear = true;
       wikigrp.clear = true;
     };
@@ -11,8 +12,17 @@
         desc = "Restore cursor from local lastplace mark";
         event = [ "VimEnter" ];
         pattern = [ "*" ];
-        command = ''silent! normal! g`0'';
+        command = ''if line("'z") > 1 && line("'z") <= line("$") | normal! g'z | endif'';
+        group = "lastplacegrp";
       }
+      {
+        desc = "Save cursor to local lastplace mark";
+        event = [ "BufLeave" "VimLeavePre" ];
+        pattern = [ "*" ];
+        command = "normal! mz";
+        group = "lastplacegrp";
+      }
+
       {
         command = "setlocal autowriteall";
         event = [ "FileType" "BufRead" ];
