@@ -8,6 +8,12 @@
     };
     programs.nixvim.autoCmd = [
       {
+        desc = "Restore cursor from local lastplace mark";
+        event = [ "VimEnter" ];
+        pattern = [ "*" ];
+        command = ''silent! normal! g`0'';
+      }
+      {
         command = "setlocal autowriteall";
         event = [ "FileType" "BufRead" ];
         pattern = [ "markdown" "*.md" "*.markdown" ];
