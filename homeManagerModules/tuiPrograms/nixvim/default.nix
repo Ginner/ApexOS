@@ -46,11 +46,9 @@ in
         telescope.enable = true;
         web-devicons.enable = true;
         vim-surround.enable = true;
-        lastplace.enable = true;
       };
     };
     home.file = {
-      ".config/nvim/queries/markdown/highlights.scm".source = ./queries/markdown/highlights.scm;
       ".config/nvim/after/queries/markdown/highlights.scm".text = ''
         ;; extends
         (list_item [
