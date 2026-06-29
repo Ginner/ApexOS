@@ -101,7 +101,7 @@ Plugins:
 | Plugin         | Use case                                                                                   |
 | -------------- | ------------------------------------------------------------------------------------------ |
 | `autoclose`    | Lightweight automatic pair insertion, disabled for quotes/backticks in Markdown and LaTeX. |
-| `cmp`          | Completion menu backed by LSP, path, and buffer sources.                                   |
+| `blink-cmp`    | Fast completion menu backed by LSP, path, and buffer sources; snippets are intentionally disabled for now. |
 | `dashboard`    | Start screen for empty Neovim sessions with search actions and bookmarks.                  |
 | `gitsigns`     | Git change signs in the sign column.                                                       |
 | `lsp`          | Language servers for Nix, Markdown, and optionally LaTeX.                                  |

@@ -22,7 +22,7 @@ in
     ./plugins/lualine.nix
     ./plugins/lsp.nix
     ./plugins/autoclose.nix
-    ./plugins/cmp.nix
+    ./plugins/blink-cmp.nix
     ./plugins/dashboard.nix
     ./plugins/git.nix
     ./plugins/treesitter.nix
