@@ -22,6 +22,7 @@ in
     ./plugins/lsp.nix
     ./plugins/autoclose.nix
     ./plugins/cmp.nix
+    ./plugins/dashboard.nix
     ./plugins/git.nix
     ./plugins/treesitter.nix
     ./plugins/latex.nix
