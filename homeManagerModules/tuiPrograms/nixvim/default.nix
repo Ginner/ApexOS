@@ -18,6 +18,7 @@ in
     ./options.nix
     ./autocommands.nix
     ./keymaps.nix
+    ./spelling.nix
     ./plugins/lualine.nix
     ./plugins/lsp.nix
     ./plugins/autoclose.nix

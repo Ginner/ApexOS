@@ -20,7 +20,6 @@
       linebreak = true;
       breakindent = true;
       virtualedit = "block";
-      spelllang = "en_us,da";
       updatetime = 500;
       ignorecase = true;
       smartcase = true;

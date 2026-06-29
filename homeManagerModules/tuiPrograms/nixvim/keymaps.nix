@@ -93,21 +93,8 @@
       }
       {
         action = ''"=strftime("%Y.%m.%d")<CR>P'';
-        key = "<F6>";
+        key = "<leader>d";
         mode = "n";
-      }
-      {
-        action = ''<C-R>=strftime("%Y.%m.%d")<CR>'';
-        key = "<F6>";
-        mode = "i";
-      }
-      {
-        action = "<cmd>setlocal spell! spelllang=en_us<CR>";
-        key = "<F7>";
-      }
-      {
-        action = "<cmd>setlocal spell! spelllang=da<CR>";
-        key = "<F8>";
       }
       {
         action = ''(v:count > 5 ? "m'" . v:count : "") . "j"'';
