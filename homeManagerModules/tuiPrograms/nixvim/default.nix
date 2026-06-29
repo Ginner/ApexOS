@@ -22,6 +22,7 @@ in
     ./plugins/lsp.nix
     ./plugins/autoclose.nix
     ./plugins/cmp.nix
+    ./plugins/git.nix
     ./plugins/treesitter.nix
     ./plugins/latex.nix
     ./plugins/mkdnflow.nix
@@ -44,6 +45,7 @@ in
       };
       plugins = {
         telescope.enable = true;
+        undotree.enable = true;
         web-devicons.enable = true;
         vim-surround.enable = true;
       };
