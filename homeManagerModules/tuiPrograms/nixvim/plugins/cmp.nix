@@ -9,7 +9,10 @@
         sources = [
           { name = "nvim_lsp"; }
           { name = "path"; }
-          { name = "buffer"; }
+          {
+            name = "buffer";
+            keyword_pattern = ''[[\k\+]]'';
+          }
         ];
         mapping = {
           "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";

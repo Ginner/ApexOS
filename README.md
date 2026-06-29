@@ -129,7 +129,8 @@ myHomeModules.tuiPrograms.nixvim.spelling = {
 Each enabled language installs its Vim `.spl` and `.sug` files and gets a
 mapping under `myHomeModules.tuiPrograms.nixvim.spelling.mappingPrefix`, which
 defaults to `<leader>s`. Add more languages in host or user config with
-`spelling.languageDefinitions`.
+`spelling.additionalLanguageDefinitions`; those languages are enabled
+automatically.
 
 Custom keybindings:
 

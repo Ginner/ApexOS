@@ -19,8 +19,9 @@ let
     };
   };
 
-  enabledLanguageNames = lib.filter (language: lib.hasAttr language spellingCfg.languageDefinitions) spellingCfg.languages;
-  enabledLanguages = map (language: spellingCfg.languageDefinitions.${language}) enabledLanguageNames;
+  languageDefinitions = spellingCfg.languageDefinitions // spellingCfg.additionalLanguageDefinitions;
+  enabledLanguageNames = lib.unique (spellingCfg.languages ++ lib.attrNames spellingCfg.additionalLanguageDefinitions);
+  enabledLanguages = map (language: languageDefinitions.${language}) enabledLanguageNames;
 
   spellFiles = lib.listToAttrs (
     lib.concatMap (language: [
@@ -92,6 +93,41 @@ in
       description = "Declarative Vim spellfile definitions keyed by Neovim spelllang name.";
     };
 
+    additionalLanguageDefinitions = lib.mkOption {
+      type = lib.types.attrsOf (
+        lib.types.submodule {
+          options = {
+            label = lib.mkOption {
+              type = lib.types.str;
+              description = "Human-readable language name.";
+            };
+
+            key = lib.mkOption {
+              type = lib.types.str;
+              description = "Suffix used after the spelling mapping prefix.";
+            };
+
+            file = lib.mkOption {
+              type = lib.types.str;
+              description = "Vim spellfile basename, for example `en` for `en.utf-8.spl`.";
+            };
+
+            splHash = lib.mkOption {
+              type = lib.types.str;
+              description = "Hash for the `.spl` spellfile.";
+            };
+
+            sugHash = lib.mkOption {
+              type = lib.types.str;
+              description = "Hash for the `.sug` suggestion file.";
+            };
+          };
+        }
+      );
+      default = { };
+      description = "Host/user-provided spell language definitions that are enabled automatically.";
+    };
+
     mappingPrefix = lib.mkOption {
       type = lib.types.str;
       default = "<leader>s";
@@ -102,13 +138,13 @@ in
   config = lib.mkIf (cfg.enable && spellingCfg.enable) {
     assertions = [
       {
-        assertion = lib.all (language: lib.hasAttr language spellingCfg.languageDefinitions) spellingCfg.languages;
-        message = "Every NixVim spelling language must have a matching languageDefinitions entry.";
+        assertion = lib.all (language: lib.hasAttr language languageDefinitions) enabledLanguageNames;
+        message = "Every NixVim spelling language must have a matching language definition.";
       }
     ];
 
     programs.nixvim = {
-      opts.spelllang = lib.concatStringsSep "," spellingCfg.languages;
+      opts.spelllang = lib.concatStringsSep "," enabledLanguageNames;
 
       keymaps = [
         {
@@ -123,13 +159,13 @@ in
       ]
       ++ map (language: {
         action = "<cmd>setlocal spell! spelllang=${language}<CR>";
-        key = "${spellingCfg.mappingPrefix}${spellingCfg.languageDefinitions.${language}.key}";
+        key = "${spellingCfg.mappingPrefix}${languageDefinitions.${language}.key}";
         mode = [
           "n"
           "v"
           "o"
         ];
-      }) spellingCfg.languages;
+      }) enabledLanguageNames;
     };
 
     home.file = spellFiles;
