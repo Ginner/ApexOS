@@ -91,6 +91,68 @@ myModules.shared.stylix.image = ./assets/wallpaper.jpg;
 myHomeModules.guiPrograms.waybar.logo = ./assets/logo.svg;
 ```
 
+## NixVim
+
+`myHomeModules.tuiPrograms.nixvim.enable = true;` configures Neovim through
+NixVim with a reusable, modernized subset of the old Vim setup.
+
+Plugins:
+
+| Plugin         | Use case                                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| `autoclose`    | Lightweight automatic pair insertion, disabled for quotes/backticks in Markdown and LaTeX. |
+| `cmp`          | Completion menu backed by LSP, path, and buffer sources.                                   |
+| `dashboard`    | Start screen for empty Neovim sessions with search actions and bookmarks.                  |
+| `gitsigns`     | Git change signs in the sign column.                                                       |
+| `lsp`          | Language servers for Nix, Markdown, and optionally LaTeX.                                  |
+| `lualine`      | Statusline and buffer/tab display.                                                         |
+| `mkdnflow`     | Markdown/wiki-style navigation and task handling.                                          |
+| `telescope`    | File and text search UI.                                                                   |
+| `treesitter`   | Syntax highlighting, indentation, and optional LaTeX textobjects.                          |
+| `undotree`     | Visual undo history browser.                                                               |
+| `vim-surround` | Add/change/delete surrounding delimiters.                                                  |
+| `vimtex`       | Optional LaTeX editing, build, and viewer integration.                                     |
+| `web-devicons` | Filetype icons for plugins that support them.                                              |
+
+Dashboard bookmarks default to generated NixVim config and `.zshrc`. Override
+them with `myHomeModules.tuiPrograms.nixvim.dashboard.bookmarks`.
+
+Custom keybindings:
+
+| Key                                    | Mode   | Action                                                  |     |
+| -------------------------------------- | ------ | ------------------------------------------------------- | --- |
+| `<leader>g`                            | N      | Telescope live grep.                                    |     |
+| `<leader>ff`                           | N      | Telescope file picker.                                  |     |
+| `<leader>u`                            | N      | Toggle undo tree.                                       |     |
+| `gb` / `gB`                            | N      | Next / previous buffer.                                 |     |
+| `<leader>bb`                           | N      | Return to alternate buffer.                             |     |
+| `<C-h/j/k/l>`                          | N      | Move between windows.                                   |     |
+| `n` / `N`                              | N      | Next / previous search result, centered and unfolded.   |     |
+| `J`                                    | N      | Join lines while preserving cursor position.            |     |
+| `gV`                                   | N      | Reselect the last changed/inserted text.                |     |
+| `J` / `K`                              | V      | Move selected lines down / up.                          |     |
+| `<leader>j` / `<leader>k`              | N      | Move current line down / up.                            |     |
+| `<F6>`                                 | N/I    | Insert today's date as `YYYY.MM.DD`.                    |     |
+| `<F7>`                                 | N/V/O  | Toggle English spell checking.                          |     |
+| `<F8>`                                 | N/V/O  | Toggle Danish spell checking.                           |     |
+| `j` / `k` with count > 5               | N      | Add large jumps to the jumplist.                        |     |
+| `cn` / `cN`                            | N      | Change next / previous occurrence of word under cursor. |     |
+| `<leader>tn` / `<leader>tc`            | N      | New tab / close tab.                                    |     |
+| `<leader>1` ... `<leader>9`            | N      | Jump to numbered tab.                                   |     |
+| `<leader><Tab>`                        | N      | Cycle windows.                                          |     |
+| `                           \| ` / `-` | N      | Vertical / horizontal split.                            |     |
+| `,`, `.`, `!`, `?`                     | Insert | Add undo breakpoints after punctuation.                 |     |
+
+Custom commands:
+
+| Command  | Action                                                        |
+| -------- | ------------------------------------------------------------- |
+| `:Wrap`  | Enable soft wrapping with word breaks and no list characters. |
+| `:W`     | Alias for `:w`.                                               |
+| `:Q`     | Alias for `:q`.                                               |
+| `:Right` | Right-align text from the cursor position.                    |
+
+
 ## LaTeX In Neovim
 
 Enable the Home Manager LaTeX module to install TeX Live tools and enable the
