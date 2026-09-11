@@ -42,7 +42,6 @@ in
       default = ''
         setopt histverify
         setopt correct
-        eval "$(direnv hook zsh)"
       '';
       description = "Extra initialization commands for zsh";
     };
