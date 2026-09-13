@@ -12,6 +12,11 @@
         instructions = lib.mkBefore [
           "~/.config/opencode/instructions/apex-os.md"
         ];
+        mcp.nixos = {
+          type = "local";
+          command = [ (lib.getExe pkgs.mcp-nixos) ];
+          enabled = lib.mkDefault true;
+        };
         permission = {
           "*" = "ask";
         };
