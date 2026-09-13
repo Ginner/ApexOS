@@ -15,7 +15,7 @@
         mcp.nixos = {
           type = "local";
           command = [ (lib.getExe pkgs.mcp-nixos) ];
-          enabled = lib.mkDefault true;
+          enabled = lib.mkDefault false;
         };
         permission = {
           "*" = "ask";
