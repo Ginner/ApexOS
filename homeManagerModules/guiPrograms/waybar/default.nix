@@ -159,7 +159,7 @@ let
     "group/left" = {
       orientation = "horizontal";
       modules = [
-        "hyprland/workspaces"
+        "ext/workspaces"
         "mpris"
       ];
     };
@@ -243,12 +243,17 @@ let
 
     # ── Module definitions ────────────────────────────────────────────
 
-    "hyprland/workspaces" = {
+    # Use the Wayland workspace protocol: Hyprland 0.56 changed workspace
+    # JSON IDs and dispatch syntax, which Waybar's Hyprland module still uses.
+    "ext/workspaces" = {
       format = "{icon}";
+      on-click = "activate";
       on-scroll-down = hyprDispatch ''hl.dsp.focus({ workspace = "e+1" })'';
       on-scroll-up = hyprDispatch ''hl.dsp.focus({ workspace = "e-1" })'';
-      sort-by = "number";
+      sort-by-name = true;
       all-outputs = true;
+      # Keep workspaces visible in the bar even when not currently on screen.
+      ignore-hidden = false;
       format-icons =
         let
           label =
@@ -269,11 +274,7 @@ let
           "10" = label inactive "0";
           "active" = "󰋘";
           "default" = label inactive "";
-          "empty" = label inactive "";
         };
-      # persistent-workspaces = {
-      #   "*" = [1 2 3 4 5 6 7 8 9 10];
-      # };
     };
 
     "cpu" = {
