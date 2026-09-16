@@ -17,6 +17,7 @@ GUI programs requiring a Wayland compositor. All modules here assume Hyprland as
 | inkscape.nix | `myHomeModules.guiPrograms.inkscape` | Vector graphics editor |
 | kde-connect.nix | `myHomeModules.guiPrograms.kde-connect` | KDE Connect HM-side config |
 | mpv.nix | `myHomeModules.guiPrograms.mpv` | Video player |
+| quickshell/ | `myHomeModules.guiPrograms.quickshell` | Opt-in pointed status bar; see its README for migration and controls |
 | swayimg.nix | `myHomeModules.guiPrograms.swayimg` | Image viewer (Wayland-native) |
 | walker.nix | `myHomeModules.guiPrograms.walker` | Application launcher |
 | waybar/ | `myHomeModules.guiPrograms.waybar` | Status bar for Hyprland |
