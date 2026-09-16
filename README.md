@@ -88,8 +88,18 @@ these through module options, for example:
 
 ```nix
 myModules.shared.stylix.image = ./assets/wallpaper.jpg;
-myHomeModules.guiPrograms.waybar.logo = ./assets/logo.svg;
+myHomeModules.guiPrograms.quickshell.logo = ./assets/logo.svg;
 ```
+
+## Status Bar
+
+The desktop and laptop Home Manager bundles enable the ApexOS Quickshell bar
+by default. The desktop bundle omits battery/backlight widgets and shows the
+bar on all outputs unless a host selects one. The laptop default is `eDP-1`,
+with optional docked-output selection handled by the bar itself.
+
+See [the Quickshell module documentation](homeManagerModules/guiPrograms/quickshell/README.md)
+for options, controls, and migration from the removed Waybar module.
 
 ## Printing
 

@@ -260,10 +260,6 @@ in
   config = lib.mkIf cfg.enable {
     assertions = [
       {
-        assertion = !(config.myHomeModules.guiPrograms.waybar.enable or false);
-        message = "Disable myHomeModules.guiPrograms.waybar when enabling the Quickshell bar.";
-      }
-      {
         assertion = lib.versionAtLeast cfg.package.version "0.3.1";
         message = "The ApexOS bar requires Quickshell 0.3.1 or newer (ext-workspace and Lua Hyprland support).";
       }
@@ -282,8 +278,13 @@ in
       Unit.PartOf = [ "hyprland-session.target" ];
       Service = {
         RestartSec = 2;
-        # hyprctl must match the compositor provided by the host, not nixpkgs.
-        Environment = [ "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin" ];
+        Environment = [
+          # hyprctl must match the compositor provided by the host, not nixpkgs.
+          "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin"
+          # Make the unit change when the generated configuration changes so
+          # Home Manager restarts it. Keep --config apex for a stable shell ID.
+          "APEX_QUICKSHELL_CONFIG=${shell}"
+        ];
       };
     };
     services.playerctld.enable = true;

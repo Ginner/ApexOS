@@ -1,12 +1,13 @@
 # ApexOS Quickshell bar
 
-Opt-in replacement for the Waybar module, using Quickshell 0.3.1 or newer.
-Desktop/laptop bundles still default to Waybar during the initial rollout.
+The default ApexOS desktop/laptop status bar, using Quickshell 0.3.1 or newer.
+Both bundles enable it with `lib.mkDefault true`, so a host can override it.
+Desktop defaults hide battery/brightness widgets and show the bar on all outputs;
+laptop defaults include those widgets and select `eDP-1`.
 
 ```nix
-myHomeModules.guiPrograms.waybar.enable = false;
 myHomeModules.guiPrograms.quickshell = {
-  enable = true;
+  enable = true; # Already enabled by the desktop and laptop bundles.
   output = "DP-1"; # Or "desc:Make Model Serial"; empty means every output.
   noBattery = true;
 };
@@ -15,6 +16,31 @@ myHomeModules.guiPrograms.quickshell = {
 The `quickshell.service` user unit starts with `hyprland-session.target` and
 stops with that session. Do not also add Quickshell to Hyprland startupPrograms.
 The generated configuration is installed at `~/.config/quickshell/apex/`.
+The service's `APEX_QUICKSHELL_CONFIG` environment entry references that
+configuration's store path. Configuration changes therefore change the unit and
+trigger a restart during Home Manager activation with service switching enabled.
+This avoids relying on a file watcher noticing a replaced configuration symlink,
+while preserving the stable `--config apex` shell identity. Restarting the bar
+also resets its stay-awake toggle/timer.
+
+## Migrating from Waybar
+
+The ApexOS Waybar module and `myHomeModules.guiPrograms.waybar` options have been
+removed. In consuming host/user flakes:
+
+1. Move `output`, `dockedOutput`, `noBattery`, and `logo` settings from
+   `myHomeModules.guiPrograms.waybar` to `myHomeModules.guiPrograms.quickshell`.
+2. Remove old `waybar.enable = false` settings used during the Quickshell trial.
+   To intentionally run without a bar, set the new `quickshell.enable = false`.
+3. Remove host-specific `programs.waybar`/`stylix.targets.waybar` customizations
+   and explicit Waybar packages or Hyprland startup entries.
+4. Remove Kanshi profile commands that kill or start Waybar or select its
+   `config-undocked.json`/`config-docked.json`. Keep the monitor profiles;
+   Quickshell uses `output`/`dockedOutput` to follow their resulting layout.
+
+Home Manager removes the old managed bar configuration links on activation.
+The legacy module is no longer an in-tree fallback; use an earlier system
+generation if you need to roll back the migration.
 
 ## Appearance and controls
 
@@ -52,8 +78,7 @@ Leave `noBattery = false` for battery and brightness widgets. `backlightDevice`
 can select a specific `/sys/class/backlight` device; empty auto-detects one.
 `dockedOutput` accepts a connector or monitor description, preferring it whenever
 available and automatically returning to `output` when disconnected. Kanshi
-continues to own the monitor layout, but old profile commands that kill/start
-Waybar must be removed in the consuming host before migrating a laptop.
+continues to own the monitor layout; bar lifecycle is handled by the user service.
 
 `refreshRateActions` supplies host-specific context-menu entries:
 
@@ -67,7 +92,7 @@ myHomeModules.guiPrograms.quickshell.refreshRateActions = [
 monospace), and `logo` are also configurable. Use a Nerd Font for status glyphs.
 Icon sizing is independent of labels and menu text, and is capped to fit the bar.
 
-## Verification and rollout
+## Verification
 
 Build/evaluate from the consuming host flake with a local ApexOS override while
 the module is uncommitted. Use `path:/absolute/path/to/ApexOS/repo` so new files
@@ -78,6 +103,12 @@ Build `nixosConfigurations.<HOST>.config.home-manager.users.<USER>.programs.quic
 to check the generated shell independently of a full system build. Validate
 QML loading and then check interactions in a real Hyprland session; a successful
 Nix build alone does not validate QML behaviour.
+
+`tests/integration.nix` accepts a consuming `nixosConfigurations.<HOST>` from
+`mkHost`. Evaluate it with `nix eval --json --impure` and
+`--apply 'system: import /absolute/path/to/quickshell/tests/integration.nix system'`.
+It checks desktop/laptop defaults, removal of the legacy bar, and that a config
+change changes the service unit while preserving the shell command/identity.
 
 `tests/test_monitor.py` exercises CPU/memory calculations, missing sensors,
 first samples, and reset network counters using the Nix-provided Python.
@@ -105,8 +136,6 @@ systemctl --user status quickshell.service
 journalctl --user -u quickshell.service -b
 ```
 
-WOPR is the first rollout. Laptop battery/backlight behaviour, docking, and
-other monitor scales need hardware validation before changing bundle defaults.
-To revert, disable this module and re-enable Waybar in the host, then rebuild.
-Unactivated WOPR host changes depend on the new ApexOS module: use the local
-override until the ApexOS input has been updated to a revision containing it.
+Battery/backlight behaviour, docking, and other monitor scales need validation
+on the relevant hardware. When testing local changes, use the local override
+until the consuming flake's ApexOS input points to the desired revision.
