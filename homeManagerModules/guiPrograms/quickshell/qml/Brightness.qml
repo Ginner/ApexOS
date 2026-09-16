@@ -5,7 +5,7 @@ Row {
     readonly property int brightness: Services.brightness
     visible: !Settings.data.noBattery && brightness >= 0
     BarButton {
-        text: root.brightness < 25 ? "󰃞" : root.brightness < 50 ? "󰃝" : root.brightness < 75 ? "󰃟" : "󰃠"
+        icon: root.brightness < 25 ? "󰃞" : root.brightness < 50 ? "󰃝" : root.brightness < 75 ? "󰃟" : "󰃠"
         tooltip: root.brightness + "%"
         onScrolled: direction => Services.setBrightness(root.brightness + direction * 2)
     }

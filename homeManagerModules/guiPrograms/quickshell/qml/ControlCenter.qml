@@ -6,7 +6,7 @@ Segment {
         text: "[C]"
         foreground: Settings.accent
         onClicked: Services.run(Settings.data.commands.notifications)
-        onRightClicked: menu.open()
+        onRightClicked: menu.toggle()
         BarMenu { id: menu; anchor.item: button; entries: Settings.data.controlMenu }
     }
 }

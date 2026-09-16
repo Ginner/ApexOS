@@ -30,6 +30,7 @@ let
       logo
       height
       fontSize
+      iconSize
       fontFamily
       ;
     # The Stylix colour set is also coercible to a palette file path. Select
@@ -225,6 +226,11 @@ in
       type = lib.types.str;
       default = config.stylix.fonts.monospace.name;
       description = "Bar font; use a Nerd Font for status icons.";
+    };
+    iconSize = lib.mkOption {
+      type = lib.types.ints.positive;
+      default = 20;
+      description = "Status icon size in logical pixels, independent of text size and capped to fit the bar height.";
     };
     temperaturePath = lib.mkOption {
       type = lib.types.nullOr lib.types.str;

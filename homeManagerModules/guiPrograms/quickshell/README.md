@@ -18,9 +18,12 @@ The generated configuration is installed at `~/.config/quickshell/apex/`.
 
 ## Appearance and controls
 
-- Pointed, elongated hexagonal segments using Stylix colours and fonts.
-- Flat-top/bottom outlined workspace hexagons; the active outline and number
-  use the theme accent. Click to activate, scroll to cycle workspaces.
+- Elongated hexagonal segments with 60-degree sides (120-degree interior
+  angles), using Stylix colours and fonts.
+- Flat-top/bottom workspace hexagons: outlines use the theme accent for every
+  visible workspace, but only the focused workspace's number is accented.
+  Numeric workspaces are sorted numerically; workspace 10 is labelled `0`.
+  Click to activate, scroll to cycle workspaces.
 - Hover the logo to reveal shutdown, reboot, and lock.
 - Click media to play/pause; scroll up/down for previous/next. The displayed
   player and commands share the same MPRIS object, preferring playerctld.
@@ -32,7 +35,9 @@ The generated configuration is installed at `~/.config/quickshell/apex/`.
 - Right-click networking for Wi-Fi and connection tools, or Bluetooth for Blueman.
 - Click the clock to toggle full date/time. There is no calendar popup.
 - Click `[C]` to toggle SwayNC; right-click for system and theme tools.
-- Menus close on an outside click or Escape. Submenus provide a Back item.
+- Menus use native popup grabs to close on an outside click or Escape. They
+  also provide a Close entry (or Back inside a submenu); right-clicking a menu
+  button toggles its popup.
 
 CPU, memory, load, temperature, brightness, and network counters are sampled by
 one read-only helper every five seconds. Missing hardware/data is shown as
@@ -58,8 +63,9 @@ myHomeModules.guiPrograms.quickshell.refreshRateActions = [
 ];
 ```
 
-`height` (29 logical pixels by default), `fontSize` (14), `fontFamily` (Stylix
+`height` (29 logical pixels by default), `fontSize` (14), `iconSize` (20), `fontFamily` (Stylix
 monospace), and `logo` are also configurable. Use a Nerd Font for status glyphs.
+Icon sizing is independent of labels and menu text, and is capped to fit the bar.
 
 ## Verification and rollout
 
@@ -83,6 +89,14 @@ read-only telemetry. Build its `drvPath` using `nix eval --raw --impure` with
 then `nix build --no-link --print-out-paths "$drv^*"` and run Quickshell with
 `--path` pointing to that output. This test requires a running Hyprland session;
 it does not map a panel or invoke system/media/audio/network actions.
+
+The smoke test also covers 60-degree segment geometry, numeric workspace order,
+the `10` → `0` label, visible-versus-focused colours, and separate icon sizing.
+`tests/menu.nix` accepts the same shell derivation and provides an additional
+popup interaction test. Run that output with `QT_QPA_PLATFORM=offscreen` and
+`QT_QUICK_BACKEND=software` to test toggling, reopening, Close, and submenu Back
+without showing windows on the desktop. Compositor-driven outside-click and
+keyboard dismissal should also be checked during a live trial.
 
 After explicit activation, inspect:
 

@@ -7,7 +7,10 @@ Shape {
     property color fillColor: Settings.background
     property color lineColor: "transparent"
     property real lineWidth: 0
-    property real tip: Math.min(height / 2, width / 4)
+    readonly property real inset: lineWidth / 2
+    // tan(60°) = sqrt(3): all six interior angles are 120°. Account for
+    // the stroke inset so outlined workspaces have the same angles as segments.
+    readonly property real tip: Math.min((height - lineWidth) / (2 * Math.sqrt(3)), (width - lineWidth) / 2)
     antialiasing: true
     preferredRendererType: Shape.CurveRenderer
     ShapePath {
@@ -15,13 +18,13 @@ Shape {
         strokeColor: root.lineColor
         fillColor: root.fillColor
         joinStyle: ShapePath.MiterJoin
-        startX: root.tip
-        startY: root.lineWidth / 2
-        PathLine { x: root.width - root.tip; y: root.lineWidth / 2 }
-        PathLine { x: root.width - root.lineWidth / 2; y: root.height / 2 }
-        PathLine { x: root.width - root.tip; y: root.height - root.lineWidth / 2 }
-        PathLine { x: root.tip; y: root.height - root.lineWidth / 2 }
-        PathLine { x: root.lineWidth / 2; y: root.height / 2 }
-        PathLine { x: root.tip; y: root.lineWidth / 2 }
+        startX: root.inset + root.tip
+        startY: root.inset
+        PathLine { x: root.width - root.inset - root.tip; y: root.inset }
+        PathLine { x: root.width - root.inset; y: root.height / 2 }
+        PathLine { x: root.width - root.inset - root.tip; y: root.height - root.inset }
+        PathLine { x: root.inset + root.tip; y: root.height - root.inset }
+        PathLine { x: root.inset; y: root.height / 2 }
+        PathLine { x: root.inset + root.tip; y: root.inset }
     }
 }

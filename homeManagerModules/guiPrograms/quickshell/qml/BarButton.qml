@@ -4,6 +4,7 @@ import Quickshell
 Item {
     id: root
     property string text: ""
+    property string icon: ""
     property string tooltip: ""
     property color foreground: Settings.foreground
     property real maximumWidth: 10000
@@ -13,23 +14,39 @@ Item {
     signal rightClicked()
     signal scrolled(int direction)
     implicitHeight: Settings.height - 4
-    implicitWidth: Math.min(label.implicitWidth + 14, maximumWidth)
+    readonly property real iconSpacing: icon !== "" && text !== "" ? 5 : 0
+    implicitWidth: Math.min(iconLabel.implicitWidth + iconSpacing + label.implicitWidth + 14, maximumWidth)
     opacity: enabled ? 1 : 0.45
 
-    Text {
-        id: label
-        anchors.fill: parent
-        anchors.leftMargin: 7
-        anchors.rightMargin: 7
-        text: root.text
-        textFormat: Text.PlainText
-        font.family: Settings.data.fontFamily
-        font.pixelSize: Settings.data.fontSize
-        font.bold: true
-        color: root.hovered && root.interactive ? Settings.accent : root.foreground
-        verticalAlignment: Text.AlignVCenter
-        horizontalAlignment: Text.AlignHCenter
-        elide: Text.ElideRight
+    Row {
+        x: 7
+        height: parent.height
+        spacing: root.iconSpacing
+        Text {
+            id: iconLabel
+            height: parent.height
+            visible: root.icon !== ""
+            text: root.icon
+            textFormat: Text.PlainText
+            font.family: Settings.data.fontFamily
+            font.pixelSize: Math.min(Settings.data.iconSize, root.height)
+            color: root.hovered && root.interactive ? Settings.accent : root.foreground
+            verticalAlignment: Text.AlignVCenter
+        }
+        Text {
+            id: label
+            height: parent.height
+            width: Math.max(0, root.width - 14 - iconLabel.implicitWidth - root.iconSpacing)
+            text: root.text
+            textFormat: Text.PlainText
+            font.family: Settings.data.fontFamily
+            font.pixelSize: Settings.data.fontSize
+            font.bold: true
+            color: root.hovered && root.interactive ? Settings.accent : root.foreground
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            elide: Text.ElideRight
+        }
     }
     MouseArea {
         id: mouse

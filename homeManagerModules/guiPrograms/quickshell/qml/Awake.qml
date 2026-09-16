@@ -2,11 +2,11 @@ import QtQuick
 
 BarButton {
     id: root
-    text: Services.awake ? "󰅶" : "󰛊"
+    icon: Services.awake ? "󰅶" : "󰛊"
     foreground: Services.awake ? Settings.accent : Settings.foreground
     tooltip: menu.visible ? "" : Services.awakeTooltip
     onClicked: Services.toggleAwake()
-    onRightClicked: menu.open()
+    onRightClicked: menu.toggle()
     BarMenu {
         id: menu
         anchor.item: root

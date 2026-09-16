@@ -5,7 +5,7 @@ Row {
     readonly property var audio: Services.audio
     readonly property bool expanded: hover.hovered || slider.pressed
     BarButton {
-        text: !root.audio || root.audio.muted ? "󰝟" : root.audio.volume < 0.33 ? "󰕿" : root.audio.volume < 0.66 ? "󰖀" : "󰕾"
+        icon: !root.audio || root.audio.muted ? "󰝟" : root.audio.volume < 0.33 ? "󰕿" : root.audio.volume < 0.66 ? "󰖀" : "󰕾"
         tooltip: root.audio ? Math.round(root.audio.volume * 100) + "%" + (root.audio.muted ? " (muted)" : "") : "No audio output"
         onClicked: if (root.audio) root.audio.muted = !root.audio.muted
         onRightClicked: Services.run(Settings.data.commands.audioSettings)

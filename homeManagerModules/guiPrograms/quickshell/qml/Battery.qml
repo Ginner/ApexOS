@@ -7,8 +7,8 @@ BarButton {
     readonly property bool charging: battery && battery.state === UPowerDeviceState.Charging
     visible: !Settings.data.noBattery && battery && battery.ready && battery.isPresent
         && battery.state !== UPowerDeviceState.FullyCharged
-    text: charging ? "󰂄 " + percent + "% (" + Services.duration(battery.timeToFull) + ")"
-        : ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂂", "󰁹"][Math.min(8, Math.floor(percent / 12))] + " " + percent + "%"
+    icon: charging ? "󰂄" : ["󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂂", "󰁹"][Math.min(8, Math.floor(percent / 12))]
+    text: percent + "%" + (charging ? " (" + Services.duration(battery.timeToFull) + ")" : "")
     foreground: charging ? Settings.foreground : percent <= 15 ? Settings.critical : percent <= 30 ? Settings.warning : Settings.foreground
     tooltip: battery ? (charging ? "Time to full: " + Services.duration(battery.timeToFull)
         : "Time remaining: " + Services.duration(battery.timeToEmpty)) : ""

@@ -1,6 +1,5 @@
 import QtQuick
 import Quickshell
-import Quickshell.Hyprland
 
 PopupWindow {
     id: root
@@ -13,6 +12,10 @@ PopupWindow {
         currentEntries = entries;
         visible = true;
     }
+    function toggle() {
+        if (visible) visible = false;
+        else open();
+    }
     function back() {
         if (stack.length === 0) { visible = false; return; }
         const previous = stack.slice();
@@ -20,17 +23,15 @@ PopupWindow {
         stack = previous;
     }
     visible: false
+    // Use the xdg-popup grab: the compositor dismisses this on outside clicks.
+    grabFocus: true
+    onVisibleChanged: if (visible) Qt.callLater(() => { if (root.visible) column.forceActiveFocus(); })
     color: Settings.background
     implicitWidth: 245
     implicitHeight: column.implicitHeight + 12
     anchor.edges: Edges.Bottom
     anchor.gravity: Edges.Bottom
     anchor.margins.bottom: 5
-    HyprlandFocusGrab {
-        windows: [root]
-        active: root.visible
-        onCleared: root.visible = false
-    }
     Column {
         id: column
         x: 6
@@ -40,9 +41,8 @@ PopupWindow {
         Keys.onEscapePressed: root.visible = false
         Keys.onLeftPressed: root.back()
         BarButton {
-            visible: root.stack.length > 0
             width: column.width
-            text: "‹ Back"
+            text: root.stack.length > 0 ? "‹ Back" : "× Close"
             onClicked: root.back()
         }
         Repeater {
