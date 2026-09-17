@@ -103,6 +103,13 @@ in
       image = cfg.image;
       polarity = cfg.polarity;
       base16Scheme = cfg.base16Scheme;
+      icons = {
+        enable = lib.mkDefault true;
+        # Tela includes Adwaita, Breeze, and hicolor fallback icons.
+        package = lib.mkDefault pkgs.tela-icon-theme;
+        dark = lib.mkDefault "Tela-dark";
+        light = lib.mkDefault "Tela-light";
+      };
       cursor = {
         package = cfg.cursor.package;
         name = cfg.cursor.name;
