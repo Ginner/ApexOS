@@ -32,6 +32,7 @@ in
     xdg.desktopEntries = lib.mkIf cfg.autoStart {
       kdeconnect = {
         name = "KDE Connect";
+        icon = lib.mkDefault "${../../assets/default/icons/kdeconnect.svg}";
         exec = "kdeconnect-indicator";
         terminal = false;
         categories = [ "Network" ];

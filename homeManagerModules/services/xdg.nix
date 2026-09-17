@@ -44,6 +44,7 @@
     xdg.desktopEntries.nvim = {
       name = "Neovim";
       genericName = "Text Editor";
+      icon = lib.mkDefault "${../../assets/default/icons/neovim.svg}";
       exec = "kitty -e nvim %F";
       terminal = false;
       type = "Application";
