@@ -88,8 +88,31 @@ these through module options, for example:
 
 ```nix
 myModules.shared.stylix.image = ./assets/wallpaper.jpg;
-myHomeModules.guiPrograms.waybar.logo = ./assets/logo.svg;
+myHomeModules.guiPrograms.quickshell.logo = ./assets/logo.svg;
 ```
+
+### Icon Theme
+
+The ApexOS Stylix module enables Tela icons by default: `Tela-dark` for dark
+polarity and `Tela-light` for light polarity. Stylix passes this selection to
+Home Manager's GTK and Qt configuration. The Nix package includes Adwaita,
+Breeze, and hicolor fallbacks for generic application buttons, including those
+used by Inkscape.
+
+Consumers can override `stylix.icons.{package,dark,light}` or disable icon
+theming with `stylix.icons.enable = false;`. Restart running applications after
+activating a theme change. Inkscape also has a per-application icon selection
+under **Preferences → Interface → Theming** if a saved override needs changing.
+
+## Status Bar
+
+The desktop and laptop Home Manager bundles enable the ApexOS Quickshell bar
+by default. The desktop bundle omits battery/backlight widgets and shows the
+bar on all outputs unless a host selects one. The laptop default is `eDP-1`,
+with optional docked-output selection handled by the bar itself.
+
+See [the Quickshell module documentation](homeManagerModules/guiPrograms/quickshell/README.md)
+for options, controls, and migration from the removed Waybar module.
 
 ## Printing
 

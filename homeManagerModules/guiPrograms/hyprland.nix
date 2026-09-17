@@ -24,12 +24,7 @@ let
     ];
   };
   exec = command: "hl.dsp.exec_cmd(${toLua command})";
-  effectiveStartupPrograms = lib.unique (
-    lib.optionals (cfg.isDesktop && (config.myHomeModules.guiPrograms.waybar.enable or false)) [
-      "waybar"
-    ]
-    ++ cfg.startupPrograms
-  );
+  effectiveStartupPrograms = lib.unique cfg.startupPrograms;
   startupScript = pkgs.writeShellScriptBin "start" (
     lib.concatMapStringsSep "\n" (p: "${p} &") effectiveStartupPrograms
   );
@@ -40,8 +35,7 @@ in
 
     startupPrograms = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      # On laptop-style hosts, waybar is intentionally absent — kanshi owns its
-      # lifecycle and starts it with the correct --config for the active profile.
+      # Quickshell is managed by its Hyprland-session systemd user service.
       default = [ "swaync" ];
       description = "Programs to start with Hyprland";
     };

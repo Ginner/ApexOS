@@ -28,7 +28,7 @@ Defines `myHomeModules.default.enable` (bool, default true). Gated behind it:
 ## laptop.nix (HM bundle)
 
 `myHomeModules.laptop.enable` enables the following with `mkDefault true`:
-- xdg, ags, firefox, hyprland, kitty, zathura, wayland-tools, kanshi, swayimg, mpv, nixvim, btop, cli-tools, starship, archive-tools, direnv, walker, waybar, yazi, pass (password manager)
+- xdg, ags, firefox, hyprland, kitty, zathura, wayland-tools, kanshi, swayimg, mpv, nixvim, btop, cli-tools, starship, archive-tools, direnv, walker, quickshell, yazi, pass (password manager)
 
 Set to `mkDefault false` (available but opt-in):
 - inkscape, kde-connect, latex, ncspot, opencode, neomutt, khard, email-accounts
@@ -58,7 +58,7 @@ All `enable` defaults to false unless the bundle sets `mkDefault true`.
 | Directory | Contains | Requires display? |
 |---|---|---|
 | cliPrograms/ | Shell tools, terminal emulator, SSH, git | No |
-| guiPrograms/ | Firefox, Hyprland, Waybar, Zathura, MPV, etc. | Yes (Wayland) |
+| guiPrograms/ | Firefox, Hyprland, Quickshell, Zathura, MPV, etc. | Yes (Wayland) |
 | tuiPrograms/ | Neovim (nixvim), btop, yazi, ncspot, neomutt, khard, opencode, tmux | No |
 | services/ | xdg portals, email accounts (mbsync/msmtp) | Mixed |
 

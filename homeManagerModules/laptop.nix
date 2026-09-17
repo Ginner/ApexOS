@@ -27,7 +27,7 @@ in
     myHomeModules.cliPrograms.archive-tools.enable = lib.mkDefault true;
     myHomeModules.cliPrograms.direnv.enable = lib.mkDefault true;
     myHomeModules.guiPrograms.walker.enable = lib.mkDefault true;
-    myHomeModules.guiPrograms.waybar.enable = lib.mkDefault true;
+    myHomeModules.guiPrograms.quickshell.enable = lib.mkDefault true;
     myHomeModules.tuiPrograms.yazi.enable = lib.mkDefault true;
 
     # Optional applications (default = false per table)

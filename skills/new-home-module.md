@@ -7,7 +7,7 @@ This covers adding a module to `homeManagerModules/cliPrograms/`, `guiPrograms/`
 | Category | Criteria | Examples |
 |---|---|---|
 | cliPrograms/ | Runs in TTY; no Wayland/X11 dependency | zsh, ssh, git, starship, kitty |
-| guiPrograms/ | Requires Wayland compositor | hyprland, firefox, mpv, waybar |
+| guiPrograms/ | Requires Wayland compositor | hyprland, firefox, mpv, quickshell |
 | tuiPrograms/ | Full-screen TUI; no compositor needed | nixvim, btop, yazi, ncspot, neomutt |
 | services/ | User-level background services | xdg portals, mbsync/msmtp email |
 

@@ -17,7 +17,7 @@
 | stylix                                            |         |        |    X    |    X   |  X |  X  | Cross-cuts system + HM theming. Uses rose-pine-hyprcursor.           |
 | kitty                                             |         |        |    X    |    X   |    |  X  | Terminal is per-user.                                                |
 | mako                                              |         |        |    X    |    X   |    |  X  | Wayland notifications—user service (handle with AGS instead?).       |
-| waybar                                            |         |        |    X    |    X   |    |  X  | Panel—user service (replace with AGS).                               |
+| quickshell                                        |         |        |    X    |    X   |    |  X  | ApexOS status bar, managed as a user service.                        |
 | ags                                               |         |        |    X*   |   X*   |    |  X  | For Wayland desktop bar/shell (Use Astal directly instead?).         |
 | wl-clipboard                                      |         |        |    X    |    X   |    |  X  | Wayland clipboard.  (via wayland-tools)                              |
 | grim / slurp / wf-recorder / swappy               |         |        |    X    |    X   |    |  X  | Wayland screenshots/recording—user tools.  (via wayland-tools)       |
