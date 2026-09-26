@@ -77,6 +77,13 @@ def network_counters():
     return result
 
 
+def charge_limit(device):
+    if device is None:
+        return None
+    value = number(Path("/sys/class/power_supply") / device / "charge_control_end_threshold")
+    return value if value is not None and 1 <= value <= 100 else None
+
+
 def snapshot(args, previous_cpu, previous_network, elapsed):
     current_cpu = cpu_times()
     cpu = None
@@ -97,7 +104,8 @@ def snapshot(args, previous_cpu, previous_network, elapsed):
     result = {"cpu": cpu, "load": float(load[0]) if load else None,
               "memory": used, "memoryPercent": percent,
               "temperature": temperature(args.temperature),
-              "brightness": backlight(args.backlight), "network": rates}
+              "brightness": backlight(args.backlight), "network": rates,
+              "chargeLimit": charge_limit(args.battery)}
     return result, current_cpu, current_network
 
 
@@ -105,6 +113,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--temperature")
     parser.add_argument("--backlight")
+    parser.add_argument("--battery", choices=("BAT0", "BAT1"))
     args = parser.parse_args()
     previous_cpu, previous_network = None, {}
     previous_time = time.monotonic()

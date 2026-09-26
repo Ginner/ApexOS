@@ -74,6 +74,28 @@ to thermal zones; `temperaturePath` selects an explicit runtime sysfs path.
 
 ## Laptop and docking configuration
 
+The NixOS laptop bundle enables `myModules.services.tlp.chargeControl.enable`.
+Click (or right-click) the battery for **Charge to 100%** (`tlp fullcharge BAT0`)
+and **Restore charge limits** (`tlp setcharge BAT0`). The override lasts until
+restored or rebooted, including after reaching 100%; it is not a one-cycle timer.
+Restoring thresholds does not discharge an already-full battery.
+
+`myModules.services.tlp.chargeControl.battery` selects `BAT0` (default) or `BAT1`.
+The configured primary user receives passwordless sudo permission for only those
+two exact commands, using the configured TLP package. The Home Manager bar detects
+this NixOS configuration automatically; other users and desktops without these
+controls retain the read-only battery widget. Set the system charge-control enable
+to `false` to opt out.
+
+The tooltip reports the selected battery's actual sysfs charge limit, refreshed
+every five seconds, and the icon is accented when that limit is 100%. This reports
+hardware state rather than a remembered click, including after bar restarts.
+Unsupported/missing threshold reporting is labelled unavailable; TLP command
+failures appear in the tooltip with a critical-coloured icon. Both actions remain
+available when reporting is unavailable. The battery remains visible at full
+charge so limits can still be restored. On multi-battery laptops the percentage
+is UPower's aggregate, while the tooltip identifies the battery being controlled.
+
 Leave `noBattery = false` for battery and brightness widgets. `backlightDevice`
 can select a specific `/sys/class/backlight` device; empty auto-detects one.
 `dockedOutput` accepts a connector or monitor description, preferring it whenever
@@ -128,6 +150,12 @@ popup interaction test. Run that output with `QT_QPA_PLATFORM=offscreen` and
 `QT_QUICK_BACKEND=software` to test toggling, reopening, Close, and submenu Back
 without showing windows on the desktop. Compositor-driven outside-click and
 keyboard dismissal should also be checked during a live trial.
+
+`tests/battery.nix` accepts a laptop shell with charge controls enabled. Build it
+like `tests/smoke.nix` and run with the same offscreen environment as the menu
+test. It replaces sudo with a harmless fixture and checks the real battery menu,
+full-charge success, restore failure feedback, observed/unknown threshold state,
+and access at full charge. It never changes the hardware's charge thresholds.
 
 After explicit activation, inspect:
 

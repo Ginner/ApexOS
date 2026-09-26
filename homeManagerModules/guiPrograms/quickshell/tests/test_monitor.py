@@ -34,7 +34,7 @@ class TelemetryTests(unittest.TestCase):
               patch.object(monitor, "backlight", return_value=None),
               patch.object(monitor, "network_counters", return_value={"test0": (2000, 1000)}),
               patch.object(monitor, "read", return_value="1.25 1.0 0.5 1/100 42")):
-            return monitor.snapshot(SimpleNamespace(temperature=None, backlight=None),
+            return monitor.snapshot(SimpleNamespace(temperature=None, backlight=None, battery=None),
                                     previous_cpu, previous_network, 5)[0]
 
     def test_rates_use_elapsed_time_and_cpu_deltas(self):
@@ -48,6 +48,18 @@ class TelemetryTests(unittest.TestCase):
         self.assertIsNone(result["cpu"])
         self.assertEqual(result["network"], {})
         self.assertEqual(self.sample((100, 40), {"test0": (3000, 1500)})["network"], {})
+
+    def test_charge_limit_tracks_override_and_restore(self):
+        with patch.object(monitor, "read", side_effect=["80", "100", "80"]) as read:
+            self.assertEqual([monitor.charge_limit("BAT0") for _ in range(3)], [80, 100, 80])
+            self.assertEqual(str(read.call_args.args[0]),
+                             "/sys/class/power_supply/BAT0/charge_control_end_threshold")
+
+    def test_missing_or_invalid_charge_limit_is_unknown(self):
+        self.assertIsNone(monitor.charge_limit(None))
+        for value in ("", "invalid", "0", "101", "-1"):
+            with self.subTest(value=value), patch.object(monitor, "read", return_value=value):
+                self.assertIsNone(monitor.charge_limit("BAT1"))
 
 
 if __name__ == "__main__":

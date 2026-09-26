@@ -2,11 +2,16 @@
   config,
   lib,
   pkgs,
+  osConfig ? { },
   ...
 }:
 
 let
   cfg = config.myHomeModules.guiPrograms.quickshell;
+  tlp = osConfig.myModules.services.tlp or { };
+  chargeControlEnabled = !cfg.noBattery && (tlp.enable or false)
+    && (tlp.chargeControl.enable or false)
+    && config.home.username == (osConfig.userGlobals.username or "");
   toLua = lib.generators.toLua { };
   launch = command: [
     "hyprctl"
@@ -23,6 +28,10 @@ let
     ${builtins.readFile ./monitor.py}
   '';
   settings = {
+    chargeControl = if chargeControlEnabled then {
+      battery = tlp.chargeControl.battery;
+      command = [ "/run/wrappers/bin/sudo" "-n" "${osConfig.services.tlp.package}/bin/tlp" ];
+    } else null;
     inherit (cfg)
       output
       dockedOutput
@@ -48,6 +57,10 @@ let
     ++ lib.optionals (!cfg.noBattery) [
       "--backlight"
       cfg.backlightDevice
+    ]
+    ++ lib.optionals chargeControlEnabled [
+      "--battery"
+      tlp.chargeControl.battery
     ];
     brightnessCommand = [
       "${pkgs.brightnessctl}/bin/brightnessctl"

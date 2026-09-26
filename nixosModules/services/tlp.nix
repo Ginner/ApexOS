@@ -7,6 +7,15 @@ in
   options.myModules.services.tlp = {
     enable = lib.mkEnableOption "TLP power management services for laptops";
 
+    chargeControl = {
+      enable = lib.mkEnableOption "primary-user temporary TLP charge controls";
+      battery = lib.mkOption {
+        type = lib.types.enum [ "BAT0" "BAT1" ];
+        default = "BAT0";
+        description = "TLP battery targeted by the bar's full-charge and restore actions.";
+      };
+    };
+
     batteryThresholds = {
       BAT0 = {
         start = lib.mkOption {
@@ -61,5 +70,15 @@ in
     services.acpid.enable = true;
     services.upower.enable = true;
     }
+    (lib.mkIf cfg.chargeControl.enable {
+      security.sudo.extraRules = [ {
+        users = [ config.userGlobals.username ];
+        runAs = "root";
+        commands = map (action: {
+          command = "${config.services.tlp.package}/bin/tlp ${action} ${cfg.chargeControl.battery}";
+          options = [ "NOPASSWD" ];
+        }) [ "fullcharge" "setcharge" ];
+      } ];
+    })
   ]);
 }
