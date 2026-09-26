@@ -60,15 +60,20 @@ generation if you need to roll back the migration.
   shell and is released when the shell exits. It is not restored after restart.
 - Right-click networking for Wi-Fi and connection tools, or Bluetooth for Blueman.
 - Click the clock to toggle full date/time. There is no calendar popup.
+- Hover the info icon for CPU, memory, root-filesystem disk usage, and temperature.
+  Click it to keep those measurements inline; click the same icon again to collapse.
+  Statistics start collapsed after a bar restart. The hover dropdown stays open
+  while the pointer is over it and is hidden while measurements are inline.
 - Click `[C]` to toggle SwayNC; right-click for system and theme tools.
 - Menus use native popup grabs to close on an outside click or Escape. They
   also provide a Close entry (or Back inside a submenu); right-clicking a menu
   button toggles its popup.
 
-CPU, memory, load, temperature, brightness, and network counters are sampled by
+CPU, memory, disk usage, temperature, brightness, and network counters are sampled by
 one read-only helper every five seconds. Missing hardware/data is shown as
-unavailable or hidden rather than as a fabricated zero. Load is a task count,
-memory is GiB, and network rates use binary units. CPU usage and network rates
+unavailable or hidden rather than as a fabricated zero. Memory is GiB, disk usage
+is the percentage of total space used on `/` (with used/total GiB in the dropdown),
+and network rates use binary units. CPU usage and network rates
 need two samples. Temperature defaults to the hottest CPU sensor, falling back
 to thermal zones; `temperaturePath` selects an explicit runtime sysfs path.
 
@@ -156,6 +161,11 @@ like `tests/smoke.nix` and run with the same offscreen environment as the menu
 test. It replaces sudo with a harmless fixture and checks the real battery menu,
 full-charge success, restore failure feedback, observed/unknown threshold state,
 and access at full charge. It never changes the hardware's charge thresholds.
+
+`tests/statistics.nix` uses the same offscreen setup to check the info/disk glyphs,
+measurement order, click-to-expand/collapse geometry, unavailable data, and hover
+dropdown opening/dismissal. Pointer travel into the dropdown should also be
+checked in a live session.
 
 After explicit activation, inspect:
 

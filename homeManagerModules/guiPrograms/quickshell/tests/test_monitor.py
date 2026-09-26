@@ -20,6 +20,18 @@ class TelemetryTests(unittest.TestCase):
         with patch.object(monitor, "read", return_value="MemTotal: 8388608 kB\nMemAvailable: 6291456 kB\nMemFree: 1048576 kB"):
             self.assertEqual(monitor.memory(), (2.0, 25))
 
+    def test_disk_reports_root_usage_in_gib_and_percent(self):
+        usage = SimpleNamespace(total=100 * 1073741824, used=25 * 1073741824)
+        with patch.object(monitor.shutil, "disk_usage", return_value=usage) as read:
+            self.assertEqual(monitor.disk(), {"used": 25.0, "total": 100.0, "percent": 25})
+            read.assert_called_once_with("/")
+
+    def test_disk_unavailable_or_empty_is_not_zero_usage(self):
+        with patch.object(monitor.shutil, "disk_usage", side_effect=OSError):
+            self.assertIsNone(monitor.disk())
+        with patch.object(monitor.shutil, "disk_usage", return_value=SimpleNamespace(total=0)):
+            self.assertIsNone(monitor.disk())
+
     def test_unavailable_sensor_does_not_report_zero(self):
         self.assertIsNone(monitor.temperature("/nonexistent/apex-test-temperature"))
         self.assertIsNone(monitor.backlight(None))
@@ -30,6 +42,7 @@ class TelemetryTests(unittest.TestCase):
     def sample(self, previous_cpu, previous_network):
         with (patch.object(monitor, "cpu_times", return_value=(200, 90)),
               patch.object(monitor, "memory", return_value=(2.0, 25)),
+              patch.object(monitor, "disk", return_value={"used": 25.0, "total": 100.0, "percent": 25}),
               patch.object(monitor, "temperature", return_value=45),
               patch.object(monitor, "backlight", return_value=None),
               patch.object(monitor, "network_counters", return_value={"test0": (2000, 1000)}),
@@ -41,7 +54,8 @@ class TelemetryTests(unittest.TestCase):
         result = self.sample((100, 40), {"test0": (1000, 500)})
         self.assertEqual(result["cpu"], 50)
         self.assertEqual(result["network"]["test0"], {"down": 200, "up": 100})
-        self.assertEqual(result["load"], 1.25)
+        self.assertEqual(result["disk"]["percent"], 25)
+        self.assertNotIn("load", result)
 
     def test_first_sample_and_reset_counters_are_unavailable(self):
         result = self.sample(None, {})
