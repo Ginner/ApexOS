@@ -18,6 +18,15 @@ Singleton {
     readonly property var sink: Pipewire.defaultAudioSink
     readonly property var audio: sink && sink.ready ? sink.audio : null
     readonly property var battery: Settings.data.noBattery ? null : UPower.displayDevice
+    readonly property var chargeControl: Settings.data.chargeControl ?? null
+    readonly property bool chargeBusy: chargeProcess.running
+    readonly property var chargeLimit: stats.chargeLimit ?? null
+    property string chargeError: ""
+    readonly property string chargeTooltip: !chargeControl ? "" : chargeError
+        || (chargeBusy ? "Applying TLP charge setting…"
+            : chargeControl.battery + ": " + (chargeLimit === null ? "Charge limit unavailable"
+                : "Charge limit: " + chargeLimit + "%"))
+            + "\nFull-charge override lasts until restored or rebooted."
     readonly property var bluetoothDevices: Bluetooth.devices.values.filter(d => d.connected)
     readonly property bool bluetoothEnabled: Bluetooth.adapters.values.some(a => a.enabled)
     readonly property var connectedDevices: Networking.devices.values.filter(d => d.connected)
@@ -37,6 +46,12 @@ Singleton {
 
     function run(command) {
         if (command && command.length) Quickshell.execDetached(command);
+    }
+    function setFullCharge(full) {
+        if (!chargeControl || chargeBusy) return;
+        chargeError = "";
+        chargeProcess.exec(chargeControl.command.concat([
+            full ? "fullcharge" : "setcharge", chargeControl.battery]));
     }
     function setVolume(percent) {
         if (audio) audio.volume = Math.max(0, Math.min(100, percent)) / 100;
@@ -76,6 +91,16 @@ Singleton {
     }
 
     PwObjectTracker { objects: root.sink ? [root.sink] : [] }
+    Process {
+        id: chargeProcess
+        stdout: StdioCollector { id: chargeOutput }
+        stderr: StdioCollector { id: chargeErrors }
+        onExited: (code, status) => {
+            if (code !== 0 || status !== 0)
+                root.chargeError = "TLP charge setting failed: "
+                    + (chargeErrors.text.trim() || chargeOutput.text.trim() || "exit " + code);
+        }
+    }
     SystemClock { id: clock; precision: SystemClock.Seconds }
     Process {
         id: telemetry

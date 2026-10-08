@@ -28,6 +28,7 @@ in
   config = lib.mkIf cfg.enable {
     # Enable laptop-specific services through module options
     myModules.services.tlp.enable = lib.mkDefault true;
+    myModules.services.tlp.chargeControl.enable = lib.mkDefault true;
     myModules.services.pipewire.enable = lib.mkDefault true;
     myModules.services.greetd.enable = lib.mkDefault true;
     myModules.services.brightnessctl.enable = lib.mkDefault true;

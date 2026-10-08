@@ -60,19 +60,46 @@ generation if you need to roll back the migration.
   shell and is released when the shell exits. It is not restored after restart.
 - Right-click networking for Wi-Fi and connection tools, or Bluetooth for Blueman.
 - Click the clock to toggle full date/time. There is no calendar popup.
+- Hover the info icon for CPU, memory, root-filesystem disk usage, and temperature.
+  Click it to keep those measurements inline; click the same icon again to collapse.
+  Statistics start collapsed after a bar restart. The hover dropdown stays open
+  while the pointer is over it and is hidden while measurements are inline.
 - Click `[C]` to toggle SwayNC; right-click for system and theme tools.
 - Menus use native popup grabs to close on an outside click or Escape. They
   also provide a Close entry (or Back inside a submenu); right-clicking a menu
   button toggles its popup.
 
-CPU, memory, load, temperature, brightness, and network counters are sampled by
+CPU, memory, disk usage, temperature, brightness, and network counters are sampled by
 one read-only helper every five seconds. Missing hardware/data is shown as
-unavailable or hidden rather than as a fabricated zero. Load is a task count,
-memory is GiB, and network rates use binary units. CPU usage and network rates
+unavailable or hidden rather than as a fabricated zero. Memory is GiB, disk usage
+is the percentage of total space used on `/` (with used/total GiB in the dropdown),
+and network rates use binary units. CPU usage and network rates
 need two samples. Temperature defaults to the hottest CPU sensor, falling back
 to thermal zones; `temperaturePath` selects an explicit runtime sysfs path.
 
 ## Laptop and docking configuration
+
+The NixOS laptop bundle enables `myModules.services.tlp.chargeControl.enable`.
+Click (or right-click) the battery for **Charge to 100%** (`tlp fullcharge BAT0`)
+and **Restore charge limits** (`tlp setcharge BAT0`). The override lasts until
+restored or rebooted, including after reaching 100%; it is not a one-cycle timer.
+Restoring thresholds does not discharge an already-full battery.
+
+`myModules.services.tlp.chargeControl.battery` selects `BAT0` (default) or `BAT1`.
+The configured primary user receives passwordless sudo permission for only those
+two exact commands, using the configured TLP package. The Home Manager bar detects
+this NixOS configuration automatically; other users and desktops without these
+controls retain the read-only battery widget. Set the system charge-control enable
+to `false` to opt out.
+
+The tooltip reports the selected battery's actual sysfs charge limit, refreshed
+every five seconds, and the icon is accented when that limit is 100%. This reports
+hardware state rather than a remembered click, including after bar restarts.
+Unsupported/missing threshold reporting is labelled unavailable; TLP command
+failures appear in the tooltip with a critical-coloured icon. Both actions remain
+available when reporting is unavailable. The battery remains visible at full
+charge so limits can still be restored. On multi-battery laptops the percentage
+is UPower's aggregate, while the tooltip identifies the battery being controlled.
 
 Leave `noBattery = false` for battery and brightness widgets. `backlightDevice`
 can select a specific `/sys/class/backlight` device; empty auto-detects one.
@@ -128,6 +155,17 @@ popup interaction test. Run that output with `QT_QPA_PLATFORM=offscreen` and
 `QT_QUICK_BACKEND=software` to test toggling, reopening, Close, and submenu Back
 without showing windows on the desktop. Compositor-driven outside-click and
 keyboard dismissal should also be checked during a live trial.
+
+`tests/battery.nix` accepts a laptop shell with charge controls enabled. Build it
+like `tests/smoke.nix` and run with the same offscreen environment as the menu
+test. It replaces sudo with a harmless fixture and checks the real battery menu,
+full-charge success, restore failure feedback, observed/unknown threshold state,
+and access at full charge. It never changes the hardware's charge thresholds.
+
+`tests/statistics.nix` uses the same offscreen setup to check the info/disk glyphs,
+measurement order, click-to-expand/collapse geometry, unavailable data, and hover
+dropdown opening/dismissal. Pointer travel into the dropdown should also be
+checked in a live session.
 
 After explicit activation, inspect:
 
