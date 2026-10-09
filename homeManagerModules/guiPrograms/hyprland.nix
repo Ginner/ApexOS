@@ -52,6 +52,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # Let Hyprland tile new terminals instead of restoring Kitty's maximized state.
+    # https://github.com/kovidgoyal/kitty/issues/10442
+    programs.kitty.settings = lib.mkIf config.programs.kitty.enable {
+      remember_window_size = lib.mkDefault false;
+    };
+
     wayland.windowManager.hyprland = {
       enable = true;
       configType = "lua";
